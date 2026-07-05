@@ -1,0 +1,82 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "settings"
+    label: "Website Settings"
+    files:
+      - label: "Clinic Details"
+        name: "clinic_details"
+        file: "data/site.json"
+        format: "json"
+        fields:
+          - {label: "Clinic Name", name: "clinic_name", widget: "string"}
+          - {label: "Doctor Name", name: "doctor_name", widget: "string"}
+          - {label: "Qualification", name: "qualification", widget: "string"}
+          - {label: "Phone", name: "phone", widget: "string"}
+          - {label: "WhatsApp Number with country code", name: "whatsapp", widget: "string"}
+          - {label: "Address", name: "address", widget: "text"}
+          - {label: "Clinic Hours", name: "hours", widget: "string"}
+          - {label: "Google Map Link", name: "map_link", widget: "string"}
+          - {label: "Google Map Embed URL", name: "map_embed", widget: "string", required: false}
+          - {label: "Doctor Photo", name: "doctor_photo", widget: "image", required: false}
+          - {label: "About Text", name: "about", widget: "text"}
+          - {label: "Experience", name: "experience", widget: "string"}
+          - {label: "Patients Count", name: "patients", widget: "string"}
+
+      - label: "Treatments / Services"
+        name: "services"
+        file: "data/services.json"
+        format: "json"
+        fields:
+          - label: "Services"
+            name: "services"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - {label: "Icon", name: "icon", widget: "string", required: false}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+
+      - label: "Blog Posts"
+        name: "posts"
+        file: "data/posts.json"
+        format: "json"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - {label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Short Description", name: "description", widget: "text"}
+              - {label: "Image", name: "image", widget: "image", required: false}
+
+      - label: "Patient Reviews"
+        name: "reviews"
+        file: "data/reviews.json"
+        format: "json"
+        fields:
+          - label: "Reviews"
+            name: "reviews"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "Patient Name", name: "name", widget: "string"}
+              - {label: "Rating Stars", name: "rating", widget: "string", default: "★★★★★"}
+              - {label: "Review Text", name: "text", widget: "text"}
+
+      - label: "Gallery Photos"
+        name: "gallery"
+        file: "data/gallery.json"
+        format: "json"
+        fields:
+          - label: "Photos"
+            name: "gallery"
+            widget: "list"
+            field: {label: "Photo", name: "photo", widget: "image"}
