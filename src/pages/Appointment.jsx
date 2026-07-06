@@ -6,43 +6,128 @@ import SectionHeader from '../components/ui/SectionHeader.jsx';
 import { useClinic } from '../context/ClinicContext.jsx';
 import { whatsappHref } from '../lib/contact.js';
 import { db, firebaseEnabled } from '../lib/firebase.js';
-import { canSubmit, isPhone, required, sanitizePayload } from '../lib/validation.js';
+import { canSubmit, isEmail, isPhone, required, sanitizePayload } from '../lib/validation.js';
+
+const initialForm = {
+  name: '',
+  phone: '',
+  email: '',
+  age: '',
+  gender: '',
+  address: '',
+  complaint: '',
+  date: '',
+  timeSlot: '',
+  notes: ''
+};
+
+const timeSlots = [
+  '10:00 AM - 12:00 PM',
+  '12:00 PM - 2:00 PM',
+  '2:00 PM - 5:00 PM',
+  '5:00 PM - 7:00 PM',
+  '7:00 PM - 9:00 PM'
+];
+
+function validateForm(form) {
+  if (!required(form.name)) return 'Please enter the patient full name.';
+  if (!isPhone(form.phone)) return 'Please enter a valid mobile number.';
+  if (!required(form.email) || !isEmail(form.email)) return 'Please enter a valid email address.';
+  const age = Number(form.age);
+  if (!Number.isInteger(age) || age < 1 || age > 120) return 'Please enter a valid age.';
+  if (!required(form.gender)) return 'Please select gender.';
+  if (!required(form.address)) return 'Please enter the patient address.';
+  if (!required(form.complaint)) return 'Please enter the chief complaint.';
+  if (!required(form.date)) return 'Please choose a preferred date.';
+  if (!required(form.timeSlot)) return 'Please choose a preferred time slot.';
+  if (!required(form.notes)) return 'Please add additional notes. Enter NA if there are none.';
+  return '';
+}
 
 export default function Appointment() {
   const { site } = useClinic();
+  const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState('');
+  const [statusType, setStatusType] = useState('success');
   const [lastSubmitAt, setLastSubmitAt] = useState(0);
+  const [saving, setSaving] = useState(false);
+
+  function updateField(event) {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const form = Object.fromEntries(new FormData(event.currentTarget));
-    if (!required(form.name) || !isPhone(form.phone)) return setStatus('Please enter a valid name and phone number.');
-    if (!canSubmit(lastSubmitAt)) return setStatus('Please wait a moment before submitting again.');
-    const payload = sanitizePayload({ ...form, status: 'new', source: 'website' });
-    if (firebaseEnabled) await addDoc(collection(db, 'appointments'), { ...payload, createdAt: serverTimestamp() });
-    setLastSubmitAt(Date.now());
-    setStatus('Appointment request received. The clinic will confirm by phone or WhatsApp.');
-    event.currentTarget.reset();
+    const validationError = validateForm(form);
+    if (validationError) {
+      setStatusType('error');
+      setStatus(validationError);
+      return;
+    }
+    if (!canSubmit(lastSubmitAt)) {
+      setStatusType('error');
+      setStatus('Please wait a moment before submitting again.');
+      return;
+    }
+    if (!firebaseEnabled) {
+      setStatusType('error');
+      setStatus('Appointment booking is temporarily unavailable. Please call or WhatsApp the clinic.');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = sanitizePayload({
+        ...form,
+        age: Number(form.age),
+        mobile: form.phone,
+        status: 'Pending',
+        source: 'website'
+      });
+      await addDoc(collection(db, 'appointments'), { ...payload, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      setLastSubmitAt(Date.now());
+      setForm(initialForm);
+      setStatusType('success');
+      setStatus('Appointment request received. The clinic will confirm by phone or WhatsApp.');
+    } catch (error) {
+      setStatusType('error');
+      setStatus(error.message || 'Unable to save appointment. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <main>
-      <SEO title="Book Appointment" description={`Book an appointment with ${site.doctorName || "Dr. Shikha Kumari Shukla"} at ${site.clinicName}.`} />
+      <SEO title="Book Appointment" description={`Book an appointment with ${site.doctorName || 'Dr. Shikha Kumari Shukla'} at ${site.clinicName}.`} />
       <Breadcrumbs items={[{ label: 'Book Appointment' }]} />
       <section className="section-pad bg-clinic-soft">
-        <div className="container-lux grid gap-10 lg:grid-cols-[.85fr_1.15fr]">
-          <SectionHeader eyebrow="Appointment" title="Book your consultation" text={`Visit ${site.location || 'Hindmotor, Uttarpara'} during ${site.hours}. Confirmation is sent manually by phone or WhatsApp.`} />
+        <div className="container-lux grid gap-10 lg:grid-cols-[.78fr_1.22fr]">
+          <div>
+            <SectionHeader eyebrow="Appointment" title="Book your consultation" text={`Visit ${site.location || 'Hindmotor, Uttarpara'} during ${site.hours}. Share your details and the clinic will confirm your appointment.`} />
+            <div className="rounded-[2rem] bg-white p-6 shadow-glass">
+              <p className="font-semibold text-clinic-ink">{site.clinicName}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{site.address}</p>
+              <a className="btn-secondary mt-5 w-full" href={whatsappHref(site.whatsapp)}>WhatsApp Booking</a>
+            </div>
+          </div>
+
           <form className="rounded-[2rem] bg-white p-6 shadow-luxury" onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="font-semibold">Full Name<input className="admin-input mt-2" name="name" required /></label>
-              <label className="font-semibold">Phone / WhatsApp<input className="admin-input mt-2" name="phone" required /></label>
-              <label className="font-semibold">Appointment Type<select className="admin-input mt-2" name="type"><option>Clinic Visit</option><option>Online Consultation</option></select></label>
-              <label className="font-semibold">Preferred Date<input className="admin-input mt-2" type="date" name="date" /></label>
+              <label className="font-semibold">Full Name<input className="admin-input mt-2" name="name" value={form.name} onChange={updateField} required /></label>
+              <label className="font-semibold">Mobile Number<input className="admin-input mt-2" name="phone" value={form.phone} onChange={updateField} inputMode="tel" required /></label>
+              <label className="font-semibold">Email<input className="admin-input mt-2" type="email" name="email" value={form.email} onChange={updateField} required /></label>
+              <label className="font-semibold">Age<input className="admin-input mt-2" type="number" min="1" max="120" name="age" value={form.age} onChange={updateField} required /></label>
+              <label className="font-semibold">Gender<select className="admin-input mt-2" name="gender" value={form.gender} onChange={updateField} required><option value="">Select gender</option><option>Female</option><option>Male</option><option>Other</option></select></label>
+              <label className="font-semibold">Preferred Date<input className="admin-input mt-2" type="date" name="date" value={form.date} onChange={updateField} required /></label>
+              <label className="font-semibold sm:col-span-2">Preferred Time Slot<select className="admin-input mt-2" name="timeSlot" value={form.timeSlot} onChange={updateField} required><option value="">Select time slot</option>{timeSlots.map((slot) => <option key={slot}>{slot}</option>)}</select></label>
             </div>
-            <label className="mt-4 block font-semibold">Health Concern<textarea className="admin-input mt-2 min-h-32" name="concern" /></label>
-            <button className="btn-primary mt-6 w-full" type="submit">Request Appointment</button>
-            {status && <p className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-clinic-emerald">{status}</p>}
-            <a className="btn-secondary mt-4 w-full" href={whatsappHref(site.whatsapp)}>WhatsApp Booking</a>
+            <label className="mt-4 block font-semibold">Address<textarea className="admin-input mt-2 min-h-24" name="address" value={form.address} onChange={updateField} required /></label>
+            <label className="mt-4 block font-semibold">Chief Complaint<textarea className="admin-input mt-2 min-h-32" name="complaint" value={form.complaint} onChange={updateField} required /></label>
+            <label className="mt-4 block font-semibold">Additional Notes<textarea className="admin-input mt-2 min-h-28" name="notes" value={form.notes} onChange={updateField} required /></label>
+            <button className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-70" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Request Appointment'}</button>
+            {status && <p className={`mt-4 rounded-2xl p-4 text-sm font-semibold ${statusType === 'success' ? 'bg-emerald-50 text-clinic-emerald' : 'bg-red-50 text-red-600'}`} role="status">{status}</p>}
           </form>
         </div>
       </section>
