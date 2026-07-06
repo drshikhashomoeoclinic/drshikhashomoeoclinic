@@ -25,6 +25,7 @@ const AdminCrud = lazy(() => import('./pages/admin/AdminCrud.jsx'));
 const AdminSeo = lazy(() => import('./pages/admin/AdminSeo.jsx'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings.jsx'));
 const AdminAppointments = lazy(() => import('./pages/admin/AdminAppointments.jsx'));
+const AdminPatients = lazy(() => import('./pages/admin/AdminPatients.jsx'));
 
 export default function App() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="gallery" element={<AdminCrud collectionName="gallery" title="Gallery Image URLs" />} />
           <Route path="reviews" element={<AdminCrud collectionName="reviews" title="Review Management" />} />
           <Route path="appointments" element={<AdminAppointments />} />
+          <Route path="patients" element={<AdminPatients />} />
           <Route path="seo" element={<AdminSeo />} />
           <Route path="settings" element={<AdminSettings collectionName="settings" documentId="site" title="Website Settings" />} />
         </Route>

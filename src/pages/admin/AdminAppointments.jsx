@@ -1,6 +1,6 @@
 import { CalendarDays, CheckCircle2, Clock3, Search, Trash2, XCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
+import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
 
 const statuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'Follow-up'];
@@ -62,6 +62,37 @@ function editFormFrom(item) {
   };
 }
 
+function patientIdFor(appointment) {
+  const source = appointment.id || `${appointment.name || 'patient'}-${Date.now()}`;
+  return `PT-${String(source).slice(0, 8).toUpperCase()}`;
+}
+
+function patientFromAppointment(appointment) {
+  const visit = {
+    appointmentId: appointment.id,
+    date: appointment.date || '',
+    timeSlot: appointment.timeSlot || '',
+    complaint: appointment.complaint || appointment.concern || '',
+    notes: appointment.notes || '',
+    status: normalizeStatus(appointment.status)
+  };
+
+  return sanitizePayload({
+    patientId: patientIdFor(appointment),
+    name: appointment.name || '',
+    mobile: appointment.phone || appointment.mobile || '',
+    email: appointment.email || '',
+    dob: appointment.dob || '',
+    gender: appointment.gender || '',
+    address: appointment.address || '',
+    medicalHistory: appointment.medicalHistory || '',
+    allergies: appointment.allergies || '',
+    chronicDiseases: appointment.chronicDiseases || '',
+    sourceAppointmentId: appointment.id,
+    visitHistory: [visit]
+  });
+}
+
 export default function AdminAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [search, setSearch] = useState('');
@@ -108,6 +139,17 @@ export default function AdminAppointments() {
     setAppointments((items) => items.filter((item) => item.id !== id));
     if (editing?.id === id) setEditing(null);
     setMessage('Appointment deleted.');
+  }
+
+  async function createPatient(item) {
+    if (item.patientId) {
+      setMessage('Patient profile already exists for this appointment.');
+      return;
+    }
+    const patientRef = await createDocument('patients', patientFromAppointment(item));
+    await updateDocument('appointments', item.id, { patientId: patientRef.id });
+    setAppointments((items) => items.map((appointment) => appointment.id === item.id ? { ...appointment, patientId: patientRef.id } : appointment));
+    setMessage('Patient profile created from appointment.');
   }
 
   function startEditing(item) {
@@ -182,6 +224,7 @@ export default function AdminAppointments() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button className="btn-secondary px-4 py-2" onClick={() => startEditing(item)}>Edit</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => createPatient(item)}>{item.patientId ? 'Patient Created' : 'Create Patient'}</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Confirmed')}>Confirm</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Cancelled')}>Cancel</button>
                   <button className="rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-600" onClick={() => deleteAppointment(item.id)}><Trash2 size={16} /></button>

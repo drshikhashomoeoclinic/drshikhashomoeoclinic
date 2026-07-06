@@ -11,6 +11,7 @@ const modules = [
   ['Gallery', '/admin/gallery'],
   ['Reviews', '/admin/reviews'],
   ['Appointments', '/admin/appointments'],
+  ['Patients', '/admin/patients'],
   ['SEO Manager', '/admin/seo'],
   ['Settings', '/admin/settings']
 ];
