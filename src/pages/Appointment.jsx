@@ -7,6 +7,7 @@ import { useClinic } from '../context/ClinicContext.jsx';
 import { whatsappHref } from '../lib/contact.js';
 import { db, firebaseEnabled } from '../lib/firebase.js';
 import { canSubmit, isEmail, isPhone, required, sanitizePayload } from '../lib/validation.js';
+import { sendAppointmentNotification } from '../services/notifications.js';
 
 const initialForm = {
   name: '',
@@ -85,7 +86,8 @@ export default function Appointment() {
         status: 'Pending',
         source: 'website'
       });
-      await addDoc(collection(db, 'appointments'), { ...payload, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      const appointmentRef = await addDoc(collection(db, 'appointments'), { ...payload, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      sendAppointmentNotification('appointment-created', { ...payload, id: appointmentRef.id });
       setLastSubmitAt(Date.now());
       setForm(initialForm);
       setStatusType('success');

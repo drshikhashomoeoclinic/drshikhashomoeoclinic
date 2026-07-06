@@ -2,6 +2,7 @@ import { CalendarDays, CheckCircle2, Clock3, Search, Trash2, XCircle } from 'luc
 import { useEffect, useMemo, useState } from 'react';
 import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
+import { sendAppointmentNotification } from '../../services/notifications.js';
 
 const statuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'Follow-up'];
 const initialEdit = {
@@ -152,6 +153,16 @@ export default function AdminAppointments() {
     setMessage('Patient profile created from appointment.');
   }
 
+  async function sendReminder(item, action) {
+    const result = await sendAppointmentNotification(action, item);
+    const label = action === 'follow-up-reminder' ? 'Follow-up' : 'Appointment';
+    if (!result.ok || result.emailSkipped) {
+      setMessage(`${label} reminder template is ready, but email service is not configured.`);
+      return;
+    }
+    setMessage(`${label} reminder sent.`);
+  }
+
   function startEditing(item) {
     setEditing(item);
     setEditForm(editFormFrom(item));
@@ -227,6 +238,8 @@ export default function AdminAppointments() {
                   <button className="btn-secondary px-4 py-2" onClick={() => createPatient(item)}>{item.patientId ? 'Patient Created' : 'Create Patient'}</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Confirmed')}>Confirm</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Cancelled')}>Cancel</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'appointment-reminder')}>Reminder</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'follow-up-reminder')}>Follow-up</button>
                   <button className="rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-600" onClick={() => deleteAppointment(item.id)}><Trash2 size={16} /></button>
                 </div>
               </div>
