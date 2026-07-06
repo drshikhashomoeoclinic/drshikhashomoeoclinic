@@ -10,7 +10,9 @@ export async function sendAppointmentNotification(action, appointment) {
     return {
       ok: true,
       data,
-      emailSkipped: Array.isArray(data.emails) && data.emails.some((item) => item?.skipped)
+      emailSkipped: Array.isArray(data.emails) && data.emails.some((item) => item?.skipped),
+      whatsappSkipped: Array.isArray(data.whatsapp?.sends) && data.whatsapp.sends.some((item) => item?.skipped),
+      whatsapp: data.whatsapp || {}
     };
   } catch {
     return { ok: false };

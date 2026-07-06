@@ -135,6 +135,35 @@ export default function AdminAppointments() {
     setMessage(`Appointment marked ${status}.`);
   }
 
+  async function confirmAppointment(item) {
+    await updateDocument('appointments', item.id, { status: 'Confirmed' });
+    const confirmed = { ...item, status: 'Confirmed' };
+    setAppointments((items) => items.map((appointment) => appointment.id === item.id ? confirmed : appointment));
+    const result = await sendAppointmentNotification('appointment-confirmed', confirmed);
+
+    if (!result.ok) {
+      setMessage('Appointment confirmed, but notification sending failed.');
+      return;
+    }
+
+    if (!result.whatsapp?.providerConfigured) {
+      if (result.whatsapp?.patientLink) window.open(result.whatsapp.patientLink, '_blank', 'noopener,noreferrer');
+      if (result.whatsapp?.doctorLink) window.open(result.whatsapp.doctorLink, '_blank', 'noopener,noreferrer');
+    }
+
+    if (result.emailSkipped) {
+      setMessage('Appointment confirmed. WhatsApp links opened; email provider environment variables are not configured.');
+      return;
+    }
+
+    if (result.whatsappSkipped) {
+      setMessage('Appointment confirmed. Emails sent; WhatsApp Web links are ready because WhatsApp provider variables are incomplete.');
+      return;
+    }
+
+    setMessage(result.whatsapp?.providerConfigured ? 'Appointment confirmed and notifications sent.' : 'Appointment confirmed. Emails sent and WhatsApp Web links opened.');
+  }
+
   async function deleteAppointment(id) {
     await removeDocument('appointments', id);
     setAppointments((items) => items.filter((item) => item.id !== id));
@@ -236,7 +265,7 @@ export default function AdminAppointments() {
                 <div className="flex flex-wrap gap-2">
                   <button className="btn-secondary px-4 py-2" onClick={() => startEditing(item)}>Edit</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => createPatient(item)}>{item.patientId ? 'Patient Created' : 'Create Patient'}</button>
-                  <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Confirmed')}>Confirm</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => confirmAppointment(item)}>Confirm</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Cancelled')}>Cancel</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'appointment-reminder')}>Reminder</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'follow-up-reminder')}>Follow-up</button>
