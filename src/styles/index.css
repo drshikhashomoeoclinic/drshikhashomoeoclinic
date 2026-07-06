@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-white font-sans text-clinic-ink antialiased;
+    margin: 0;
+  }
+  img { max-width: 100%; }
+  input, textarea, select { @apply outline-none; }
+}
+
+@layer components {
+  .container-lux { @apply mx-auto w-[min(1180px,calc(100%-32px))]; }
+  .glass { @apply border border-white/60 bg-white/75 shadow-glass backdrop-blur-xl; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-full bg-clinic-emerald px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:bg-clinic-emeraldDark; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-clinic-ink transition hover:-translate-y-0.5 hover:border-emerald-200 hover:text-clinic-emerald; }
+  .section-pad { @apply py-16 md:py-24; }
+  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.22em] text-clinic-emerald; }
+  .admin-input { @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-clinic-emerald; }
+}
