@@ -25,14 +25,14 @@ export default function Reviews() {
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {reviewImages.map((review) => (
                 <button
-                  className="block w-full overflow-hidden rounded-2xl bg-white p-0 text-left shadow-luxury transition hover:-translate-y-1"
+                  className="block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-white p-0 text-left shadow-lg shadow-slate-900/10 transition hover:-translate-y-1"
                   key={review.id || review.image}
                   type="button"
                   onClick={() => setActiveReview(review)}
                   aria-label={`Open ${review.title || 'review image'}`}
                 >
                   <img
-                    className="h-auto w-full rounded-2xl object-contain"
+                    className="h-full w-full rounded-2xl object-cover"
                     src={review.image}
                     alt={review.title || 'Patient review'}
                     loading="lazy"
