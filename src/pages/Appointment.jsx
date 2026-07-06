@@ -33,7 +33,7 @@ const timeSlots = [
 function validateForm(form) {
   if (!required(form.name)) return 'Please enter the patient full name.';
   if (!isPhone(form.phone)) return 'Please enter a valid mobile number.';
-  if (!required(form.email) || !isEmail(form.email)) return 'Please enter a valid email address.';
+  if (form.email && !isEmail(form.email)) return 'Please enter a valid email address.';
   const age = Number(form.age);
   if (!Number.isInteger(age) || age < 1 || age > 120) return 'Please enter a valid age.';
   if (!required(form.gender)) return 'Please select gender.';
@@ -119,7 +119,7 @@ export default function Appointment() {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="font-semibold">Full Name<input className="admin-input mt-2" name="name" value={form.name} onChange={updateField} required /></label>
               <label className="font-semibold">Mobile Number<input className="admin-input mt-2" name="phone" value={form.phone} onChange={updateField} inputMode="tel" required /></label>
-              <label className="font-semibold">Email<input className="admin-input mt-2" type="email" name="email" value={form.email} onChange={updateField} required /></label>
+              <label className="font-semibold">Email <span className="text-xs text-slate-400">(optional)</span><input className="admin-input mt-2" type="email" name="email" value={form.email} onChange={updateField} /></label>
               <label className="font-semibold">Age<input className="admin-input mt-2" type="number" min="1" max="120" name="age" value={form.age} onChange={updateField} required /></label>
               <label className="font-semibold">Gender<select className="admin-input mt-2" name="gender" value={form.gender} onChange={updateField} required><option value="">Select gender</option><option>Female</option><option>Male</option><option>Other</option></select></label>
               <label className="font-semibold">Preferred Date<input className="admin-input mt-2" type="date" name="date" value={form.date} onChange={updateField} required /></label>

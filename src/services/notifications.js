@@ -49,7 +49,7 @@ export async function sendAppointmentNotification(action, appointment) {
     return {
       ok: true,
       data,
-      emailSkipped: Array.isArray(data.emails) && data.emails.some((item) => item?.skipped || item?.failed),
+      emailSkipped: Array.isArray(data.emails) && data.emails.length > 0 && data.emails.some((item) => item?.skipped || item?.failed),
       whatsappSkipped: Array.isArray(data.whatsapp?.sends) && data.whatsapp.sends.some((item) => item?.skipped || item?.failed),
       whatsapp: data.whatsapp || {}
     };

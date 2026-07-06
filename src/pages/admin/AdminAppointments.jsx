@@ -158,6 +158,11 @@ export default function AdminAppointments() {
       return;
     }
 
+    if (!confirmed.email) {
+      setMessage('Appointment confirmed. Patient email missing, so WhatsApp confirmation opened instead.');
+      return;
+    }
+
     if (result.whatsappSkipped) {
       setMessage('Appointment confirmed. Emails sent; WhatsApp Web links are ready because WhatsApp provider variables are incomplete.');
       return;

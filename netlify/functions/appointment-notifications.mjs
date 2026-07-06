@@ -127,7 +127,7 @@ async function sendEmail({ to, action, appointment }) {
   const apiKey = process.env.EMAIL_API_KEY || process.env.RESEND_API_KEY;
   const from = process.env.FROM_EMAIL || process.env.NOTIFICATION_FROM_EMAIL;
   if (!apiKey || !from || !to) {
-    return { skipped: true, reason: 'Email environment variables are not configured.' };
+    return { skipped: true, reason: to ? 'Email environment variables are not configured.' : 'Recipient email is missing.' };
   }
 
   const content = emailContent(action, appointment);
@@ -216,15 +216,15 @@ export async function handler(event) {
     };
 
     if (action === 'appointment-created') {
-      result.emails.push(await safeSendEmail({ to: appointment.email, action: 'patient-confirmation', appointment }));
+      if (clean(appointment.email)) result.emails.push(await safeSendEmail({ to: appointment.email, action: 'patient-confirmation', appointment }));
       result.emails.push(await safeSendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'admin-new-appointment', appointment }));
     } else if (action === 'appointment-confirmed') {
-      result.emails.push(await safeSendEmail({ to: appointment.email, action: 'appointment-confirmed', appointment }));
+      if (clean(appointment.email)) result.emails.push(await safeSendEmail({ to: appointment.email, action: 'appointment-confirmed', appointment }));
       result.emails.push(await safeSendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'appointment-confirmed-admin', appointment }));
       result.whatsapp.sends.push(await safeSendWhatsApp({ to: appointment.phone || appointment.mobile, message: patientWhatsappMessage }));
       result.whatsapp.sends.push(await safeSendWhatsApp({ to: process.env.CLINIC_WHATSAPP_NUMBER, message: doctorWhatsappMessage }));
     } else if (action === 'appointment-reminder' || action === 'follow-up-reminder') {
-      result.emails.push(await safeSendEmail({ to: appointment.email, action, appointment }));
+      if (clean(appointment.email)) result.emails.push(await safeSendEmail({ to: appointment.email, action, appointment }));
     }
 
     return json(200, result);
