@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { homeSettings, seoSettings, siteSettings } from '../../data/fallback.js';
 import { getDocument, saveDocument } from '../../services/firestore.js';
 
 const fieldSets = {
   'settings/site': [
-    'clinicName', 'phone', 'whatsapp', 'email', 'hours', 'mapLink', 'mapEmbed', 'googleReviews',
+    'clinicName', 'doctorName', 'qualification', 'phone', 'whatsapp', 'email', 'location', 'hours', 'mapLink', 'mapEmbed', 'googleReviews',
     'address:textarea', 'footerDescription:textarea', 'emergencyText:textarea'
   ],
   'settings/doctor': [
@@ -21,7 +22,7 @@ const fieldSets = {
     'siteUrl', 'title', 'description:textarea', 'image', 'keywords:textarea',
     'homeTitle', 'homeDescription:textarea', 'aboutTitle', 'aboutDescription:textarea',
     'treatmentsTitle', 'treatmentsDescription:textarea', 'blogTitle', 'blogDescription:textarea',
-    'contactTitle', 'contactDescription:textarea'
+    'contactTitle', 'contactDescription:textarea', 'bookAppointmentTitle', 'bookAppointmentDescription:textarea'
   ]
 };
 
@@ -33,12 +34,38 @@ function labelFor(field) {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase());
 }
 
+function homeDefaults() {
+  const [feature1, feature2, feature3] = homeSettings.featureCards;
+  return {
+    ...homeSettings,
+    highlights: homeSettings.highlights.join('\n'),
+    feature1Title: feature1?.title || '',
+    feature1Text: feature1?.text || '',
+    feature2Title: feature2?.title || '',
+    feature2Text: feature2?.text || '',
+    feature3Title: feature3?.title || '',
+    feature3Text: feature3?.text || ''
+  };
+}
+
+function defaultData(collectionName, documentId) {
+  const key = `${collectionName}/${documentId}`;
+  if (key === 'settings/site') return siteSettings;
+  if (key === 'settings/doctor') return siteSettings;
+  if (key === 'pages/home') return homeDefaults();
+  if (key === 'seo/settings') return seoSettings;
+  return {};
+}
+
 export default function AdminSettings({ collectionName, documentId, title }) {
   const [data, setData] = useState({});
   const [status, setStatus] = useState('');
   const fields = useMemo(() => fieldConfig(collectionName, documentId), [collectionName, documentId]);
 
-  useEffect(() => { getDocument(collectionName, documentId, {}).then(setData); }, [collectionName, documentId]);
+  useEffect(() => {
+    const fallback = defaultData(collectionName, documentId);
+    getDocument(collectionName, documentId, fallback).then((document) => setData({ ...fallback, ...document }));
+  }, [collectionName, documentId]);
 
   async function handleSubmit(event) {
     event.preventDefault();

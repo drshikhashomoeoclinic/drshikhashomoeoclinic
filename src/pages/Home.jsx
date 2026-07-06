@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, CalendarDays, MapPin, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react';
+import { ArrowRight, CalendarDays, Clock, MapPin, Phone, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogCard from '../components/cards/BlogCard.jsx';
@@ -41,6 +41,11 @@ export default function Home() {
               {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item) => (
                 <div className="glass rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-teal-100 hover:bg-white" key={item}>{item}</div>
               ))}
+            </div>
+            <div className="mt-6 grid gap-3 text-sm font-semibold text-slate-700 sm:grid-cols-3">
+              <div className="flex items-center gap-2"><MapPin size={17} className="text-clinic-emerald" /> {site.location}</div>
+              <div className="flex items-center gap-2"><Clock size={17} className="text-clinic-emerald" /> {site.hours}</div>
+              <div className="flex items-center gap-2"><Phone size={17} className="text-clinic-emerald" /> {site.phone}</div>
             </div>
           </motion.div>
 

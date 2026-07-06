@@ -4,15 +4,51 @@ export const siteSettings = {
   qualification: 'BHMS | Homoeopathic Consultant',
   experience: '5+',
   patients: '1000+',
-  phone: '+91 93304 30699',
-  whatsapp: '919330430699',
-  email: 'care@drshikhahomoeoclinic.com',
-  address: '113 Debaipukur Road, Hindmotor, Uttarpara, West Bengal',
-  hours: 'Mon - Sat: 10:00 AM - 8:00 PM',
-  mapLink: 'https://www.google.com/maps/search/?api=1&query=Dr+Shikha+Homoeo+Clinic+Hindmotor',
-  mapEmbed: 'https://www.google.com/maps?q=Hindmotor,Uttarpara,West+Bengal&output=embed',
-  googleReviews: '#',
+  phone: '7001431935',
+  whatsapp: '7001431935',
+  email: 'shikha@drshikhashomoeoclinic.com',
+  location: 'Hindmotor, Uttarpara',
+  address: '113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor, Hooghly, West Bengal 712233',
+  hours: 'Mon-Sat: 10:00 AM - 9:00 PM',
+  mapLink: 'https://www.google.com/maps/search/?api=1&query=Dr.+Shikha%27s+Homoeo+Clinic+113+Debaipukur+Road+Hindmotor+Hooghly+West+Bengal+712233',
+  mapEmbed: 'https://www.google.com/maps?q=113+Debaipukur+Road,+Near+Amtallah+Rickshaw+Stand,+Hindmotor,+Hooghly,+West+Bengal+712233&output=embed',
+  googleReviews: 'https://share.google/KkBpGebykxQobEbRa',
   social: { facebook: '#', instagram: '#', youtube: '#' }
+};
+
+export const seoSettings = {
+  siteUrl: 'https://www.drshikhashomoeoclinic.com',
+  title: "Dr. Shikha's Homoeo Clinic | Hindmotor, Uttarpara",
+  description: "Book homoeopathic consultation with Dr. Shikha Kumari Shukla, BHMS, at Dr. Shikha's Homoeo Clinic in Hindmotor, Uttarpara.",
+  keywords: "Dr. Shikha's Homoeo Clinic, Dr. Shikha Kumari Shukla, homoeopathic consultant, BHMS, Hindmotor, Uttarpara, Hooghly homeopathy",
+  homeTitle: "Dr. Shikha's Homoeo Clinic | Hindmotor, Uttarpara",
+  homeDescription: "Dr. Shikha Kumari Shukla, BHMS, offers homoeopathic consultation at 113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor.",
+  aboutTitle: 'Dr. Shikha Kumari Shukla, BHMS | Doctor Profile',
+  aboutDescription: "Meet Dr. Shikha Kumari Shukla, BHMS and Homoeopathic Consultant at Dr. Shikha's Homoeo Clinic, Hindmotor.",
+  contactTitle: "Contact Dr. Shikha's Homoeo Clinic | Hindmotor",
+  contactDescription: 'Call or visit the clinic at 113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor, Hooghly, West Bengal 712233.',
+  bookAppointmentTitle: "Book Appointment | Dr. Shikha's Homoeo Clinic",
+  bookAppointmentDescription: 'Request an appointment with Dr. Shikha Kumari Shukla by phone, WhatsApp, or the online appointment form.'
+};
+
+export const homeSettings = {
+  eyebrow: 'Homoeopathic Clinic in Hindmotor',
+  heroTitle: 'Dr. Shikha Kumari Shukla, BHMS',
+  heroSubtitle: "Visit Dr. Shikha's Homoeo Clinic at 113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor for homoeopathic consultation.",
+  heroImage: '',
+  highlights: ['Hindmotor, Uttarpara', 'Mon-Sat: 10:00 AM - 9:00 PM', 'Call 7001431935'],
+  featureCards: [
+    { title: 'Detailed Case Taking', text: 'Consultations are built around careful listening, symptom history, and follow-up planning.' },
+    { title: 'Homoeopathic Consultant', text: 'Care is led by Dr. Shikha Kumari Shukla, BHMS.' },
+    { title: 'Clinic and Online Booking', text: 'Appointment requests can be made by form, phone, or WhatsApp.' }
+  ],
+  treatmentsTitle: 'Conditions We Treat',
+  treatmentsText: 'A focused set of common acute and chronic concerns with personalised consultation.',
+  reviewsTitle: 'Trusted by local families',
+  reviewsText: 'Read patient experiences and open the official Google Reviews profile for the clinic.',
+  blogTitle: 'Latest from the clinic',
+  contactTitle: 'Visit or reach us',
+  contactText: '113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor, Hooghly, West Bengal 712233'
 };
 
 export const services = [

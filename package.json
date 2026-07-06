@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "node --preserve-symlinks -e \"import('vite').then(async ({ build }) => { const react = (await import('@vitejs/plugin-react')).default; await build({ configFile: false, resolve: { preserveSymlinks: true }, plugins: [react()], build: { sourcemap: false, rollupOptions: { output: { manualChunks: { firebase: ['firebase/app','firebase/auth','firebase/firestore'], motion: ['framer-motion'] } } } } }); })\"",
     "preview": "vite preview",
+    "seed:clinic": "node scripts/seedClinicFirestore.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

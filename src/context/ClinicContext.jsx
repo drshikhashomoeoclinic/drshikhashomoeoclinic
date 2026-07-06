@@ -1,33 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
-import { gallery, posts, reviews, services, siteSettings } from '../data/fallback.js';
+import { gallery, homeSettings, posts, reviews, seoSettings, services, siteSettings } from '../data/fallback.js';
 import { db, firebaseEnabled } from '../lib/firebase.js';
 import { normalizeGalleryItem, normalizePost, normalizeReview, normalizeService, sortByFreshness } from '../lib/content.js';
 
 const ClinicContext = createContext(null);
-const fallbackHome = {
-  eyebrow: 'Premium Homoeopathic Clinic',
-  heroTitle: 'Healing naturally, caring personally.',
-  heroSubtitle: '',
-  heroImage: '',
-  highlights: ['Personalised care', 'Online consults', 'Follow-up support'],
-  featureCards: [
-    { title: 'Detailed Case Taking', text: 'Designed for clarity, comfort, and responsible supportive care.' },
-    { title: 'Gentle Family Care', text: 'Designed for clarity, comfort, and responsible supportive care.' },
-    { title: 'Evidence-Aware Guidance', text: 'Designed for clarity, comfort, and responsible supportive care.' }
-  ],
-  treatmentsTitle: 'Conditions We Treat',
-  treatmentsText: 'A focused set of common acute and chronic concerns with personalised consultation.',
-  reviewsTitle: 'Trusted by local families',
-  reviewsText: 'Real reviews can be managed from the admin dashboard and connected to Google Reviews.',
-  blogTitle: 'Latest from the clinic'
-};
-
 const initialState = {
   site: siteSettings,
   doctor: siteSettings,
-  home: fallbackHome,
-  seo: {},
+  home: homeSettings,
+  seo: seoSettings,
   services: services.map(normalizeService),
   posts: posts.map(normalizePost),
   reviews: reviews.map(normalizeReview),
@@ -51,11 +33,11 @@ function normalizeHome(home = {}) {
   ].filter((item) => item.title || item.text);
 
   return {
-    ...fallbackHome,
+    ...homeSettings,
     ...home,
     heroImage,
-    highlights: highlights.length ? highlights : fallbackHome.highlights,
-    featureCards: featureCards.length ? featureCards : fallbackHome.featureCards
+    highlights: highlights.length ? highlights : homeSettings.highlights,
+    featureCards: featureCards.length ? featureCards : homeSettings.featureCards
   };
 }
 
@@ -83,11 +65,11 @@ export function ClinicProvider({ children }) {
       }, () => setState((current) => ({ ...current, loading: false }))),
       onSnapshot(doc(db, 'seo', 'settings'), (snapshot) => {
         const seo = snapshot.exists() ? snapshot.data() : {};
-        setState((current) => ({ ...current, seo: { ...current.seo, ...seo }, loading: false }));
+        setState((current) => ({ ...current, seo: { ...seoSettings, ...current.seo, ...seo }, loading: false }));
       }, () => setState((current) => ({ ...current, loading: false }))),
       onSnapshot(doc(db, 'settings', 'seo'), (snapshot) => {
         const seo = snapshot.exists() ? snapshot.data() : {};
-        setState((current) => ({ ...current, seo: { ...seo, ...current.seo }, loading: false }));
+        setState((current) => ({ ...current, seo: { ...seoSettings, ...seo, ...current.seo }, loading: false }));
       }, () => setState((current) => ({ ...current, loading: false }))),
       onSnapshot(collection(db, 'services'), (snapshot) => {
         const nextServices = docsFromSnapshot(snapshot).map(normalizeService);

@@ -19,7 +19,7 @@ export default function AboutDoctor() {
           <div>
             <SectionHeader eyebrow="Doctor Profile" title={doctor.profileTitle || 'Care built on listening, follow-up, and trust.'} text={about} />
             <div className="grid gap-4 sm:grid-cols-2">
-              {[`Qualification: ${qualification}`, `${experience} years experience`, doctor.certificates || 'Certificates and achievements ready in admin', 'Online and in-clinic consultation'].map((item) => <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-glass" key={item}>{item}</div>)}
+              {[`Qualification: ${qualification}`, `${experience} years experience`, doctor.certificates || 'Certificates and achievements ready in admin', `${site.clinicName}, ${site.location || site.address}`].map((item) => <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-glass" key={item}>{item}</div>)}
             </div>
           </div>
         </div>

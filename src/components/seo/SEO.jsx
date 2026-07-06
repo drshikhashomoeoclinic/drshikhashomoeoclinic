@@ -21,6 +21,8 @@ export default function SEO({ title, description, image = '/og-image.jpg', type 
     medicalSpecialty: 'Homeopathy',
     address: site.address,
     telephone: site.phone,
+    email: site.email,
+    openingHours: site.hours,
     url: siteUrl,
     physician: { '@type': 'Physician', name: site.doctorName, medicalSpecialty: 'Homeopathy' }
   };
