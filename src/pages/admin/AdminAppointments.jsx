@@ -152,7 +152,9 @@ export default function AdminAppointments() {
     }
 
     if (result.emailSkipped) {
-      setMessage('Appointment confirmed. WhatsApp links opened; email provider environment variables are not configured.');
+      setMessage(result.functionUnavailable
+        ? 'Appointment confirmed. Notification service unavailable, so WhatsApp Web links opened as fallback.'
+        : 'Appointment confirmed. WhatsApp links opened; email provider environment variables are missing or failed.');
       return;
     }
 

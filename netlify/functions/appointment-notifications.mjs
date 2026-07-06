@@ -177,6 +177,22 @@ async function sendWhatsApp({ to, message }) {
   return response.json();
 }
 
+async function safeSendEmail(payload) {
+  try {
+    return await sendEmail(payload);
+  } catch (error) {
+    return { failed: true, reason: error.message || 'Email sending failed.' };
+  }
+}
+
+async function safeSendWhatsApp(payload) {
+  try {
+    return await sendWhatsApp(payload);
+  } catch (error) {
+    return { failed: true, reason: error.message || 'WhatsApp sending failed.' };
+  }
+}
+
 export async function handler(event) {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' });
 
@@ -200,15 +216,15 @@ export async function handler(event) {
     };
 
     if (action === 'appointment-created') {
-      result.emails.push(await sendEmail({ to: appointment.email, action: 'patient-confirmation', appointment }));
-      result.emails.push(await sendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'admin-new-appointment', appointment }));
+      result.emails.push(await safeSendEmail({ to: appointment.email, action: 'patient-confirmation', appointment }));
+      result.emails.push(await safeSendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'admin-new-appointment', appointment }));
     } else if (action === 'appointment-confirmed') {
-      result.emails.push(await sendEmail({ to: appointment.email, action: 'appointment-confirmed', appointment }));
-      result.emails.push(await sendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'appointment-confirmed-admin', appointment }));
-      result.whatsapp.sends.push(await sendWhatsApp({ to: appointment.phone || appointment.mobile, message: patientWhatsappMessage }));
-      result.whatsapp.sends.push(await sendWhatsApp({ to: process.env.CLINIC_WHATSAPP_NUMBER, message: doctorWhatsappMessage }));
+      result.emails.push(await safeSendEmail({ to: appointment.email, action: 'appointment-confirmed', appointment }));
+      result.emails.push(await safeSendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'appointment-confirmed-admin', appointment }));
+      result.whatsapp.sends.push(await safeSendWhatsApp({ to: appointment.phone || appointment.mobile, message: patientWhatsappMessage }));
+      result.whatsapp.sends.push(await safeSendWhatsApp({ to: process.env.CLINIC_WHATSAPP_NUMBER, message: doctorWhatsappMessage }));
     } else if (action === 'appointment-reminder' || action === 'follow-up-reminder') {
-      result.emails.push(await sendEmail({ to: appointment.email, action, appointment }));
+      result.emails.push(await safeSendEmail({ to: appointment.email, action, appointment }));
     }
 
     return json(200, result);
