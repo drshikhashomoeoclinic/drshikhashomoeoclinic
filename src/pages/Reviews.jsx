@@ -6,7 +6,7 @@ import SectionHeader from '../components/ui/SectionHeader.jsx';
 import { useClinic } from '../context/ClinicContext.jsx';
 
 export default function Reviews() {
-  const { reviews, site } = useClinic();
+  const { reviews } = useClinic();
   const [activeReview, setActiveReview] = useState(null);
   const reviewImages = reviews.filter((review) => review.image);
 
@@ -17,8 +17,8 @@ export default function Reviews() {
       <section className="section-pad">
         <div className="container-lux">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <SectionHeader eyebrow="Reviews" title="Patient experiences" text="Uploaded patient review images from the clinic." />
-            <a className="btn-primary md:mb-3" href={site.googleReviews} target="_blank" rel="noreferrer">Write a Google Review</a>
+            <SectionHeader eyebrow="Reviews" title="Patient experiences" text="Read genuine patient experiences and Google reviews shared by our happy patients." />
+            <a className="btn-primary md:mb-3" href="https://g.page/r/CYfwkEswY92XEBM/review" target="_blank" rel="noreferrer">Write a Google Review</a>
           </div>
 
           {reviewImages.length ? (
