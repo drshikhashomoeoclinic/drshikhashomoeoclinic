@@ -19,7 +19,9 @@ const fieldSets = {
     'blogTitle', 'contactTitle', 'contactText:textarea'
   ],
   'seo/settings': [
-    'siteUrl', 'title', 'description:textarea', 'image', 'keywords:textarea',
+    'siteUrl', 'canonicalBase', 'title', 'description:textarea', 'keywords:textarea', 'image',
+    'googleAnalyticsId', 'searchConsoleVerification', 'schemaType', 'medicalSpecialty',
+    'priceRange', 'areaServed:textarea', 'robotsTxt:textarea', 'sitemapXml:textarea',
     'homeTitle', 'homeDescription:textarea', 'aboutTitle', 'aboutDescription:textarea',
     'treatmentsTitle', 'treatmentsDescription:textarea', 'blogTitle', 'blogDescription:textarea',
     'contactTitle', 'contactDescription:textarea', 'bookAppointmentTitle', 'bookAppointmentDescription:textarea'
