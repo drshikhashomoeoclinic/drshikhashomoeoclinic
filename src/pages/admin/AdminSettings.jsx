@@ -1,3 +1,4 @@
+import { Eye, RotateCcw, Save, Undo2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { homeSettings, seoSettings, siteSettings } from '../../data/fallback.js';
 import { getDocument, saveDocument } from '../../services/firestore.js';
@@ -46,7 +47,9 @@ function homeDefaults() {
     feature2Title: feature2?.title || '',
     feature2Text: feature2?.text || '',
     feature3Title: feature3?.title || '',
-    feature3Text: feature3?.text || ''
+    feature3Text: feature3?.text || '',
+    footerDescription: siteSettings.footerDescription || '',
+    emergencyText: siteSettings.emergencyText || ''
   };
 }
 
@@ -59,26 +62,292 @@ function defaultData(collectionName, documentId) {
   return {};
 }
 
+const homepageSections = [
+  {
+    id: 'hero',
+    title: 'Hero Section',
+    liveHash: 'home-hero',
+    placeholder: 'Top banner preview',
+    description: 'This is the first section patients see when they open the website.',
+    fields: [
+      ['eyebrow', 'Small Label', 'Appears above the main heading on the homepage hero.'],
+      ['heroTitle', 'Main Heading', 'Appears as the large main heading at the top of the homepage.'],
+      ['heroSubtitle:textarea', 'Short Description', 'Appears below the main heading in the hero section.'],
+      ['heroImage', 'Doctor Image URL', 'Controls the main doctor or clinic image shown beside the hero text.'],
+      ['highlights:textarea', 'Highlight Points', 'Appears as small highlight boxes under the hero buttons. Add one point per line.']
+    ]
+  },
+  {
+    id: 'features',
+    title: 'Features Section',
+    liveHash: 'home-features',
+    placeholder: 'Three feature cards',
+    description: 'These cards explain why patients should choose the clinic.',
+    fields: [
+      ['feature1Title', 'First Feature Title', 'Appears on the first feature card below the hero.'],
+      ['feature1Text:textarea', 'First Feature Description', 'Appears inside the first feature card.'],
+      ['feature2Title', 'Second Feature Title', 'Appears on the second feature card below the hero.'],
+      ['feature2Text:textarea', 'Second Feature Description', 'Appears inside the second feature card.'],
+      ['feature3Title', 'Third Feature Title', 'Appears on the third feature card below the hero.'],
+      ['feature3Text:textarea', 'Third Feature Description', 'Appears inside the third feature card.']
+    ]
+  },
+  {
+    id: 'treatments',
+    title: 'Treatments Section',
+    liveHash: 'home-treatments',
+    placeholder: 'Treatment list header',
+    description: 'This heading sits above the treatment cards on the homepage.',
+    fields: [
+      ['treatmentsTitle', 'Section Heading', 'Appears above the treatment cards on the homepage.'],
+      ['treatmentsText:textarea', 'Section Description', 'Appears below the treatment heading.']
+    ]
+  },
+  {
+    id: 'reviews',
+    title: 'Reviews Section',
+    liveHash: 'home-reviews',
+    placeholder: 'Patient review intro',
+    description: 'This introduces patient feedback on the homepage.',
+    fields: [
+      ['reviewsTitle', 'Section Heading', 'Appears beside the homepage review previews.'],
+      ['reviewsText:textarea', 'Section Description', 'Appears below the reviews heading.']
+    ]
+  },
+  {
+    id: 'blog',
+    title: 'Blog Section',
+    liveHash: 'home-blog',
+    placeholder: 'Health notes heading',
+    description: 'This title appears above the latest health notes on the homepage.',
+    fields: [
+      ['blogTitle', 'Section Heading', 'Appears above the latest blog posts on the homepage.']
+    ]
+  },
+  {
+    id: 'contact',
+    title: 'Contact CTA',
+    liveHash: 'home-contact-cta',
+    placeholder: 'Booking call-to-action',
+    description: 'This call-to-action encourages patients to book or contact the clinic.',
+    fields: [
+      ['contactTitle', 'CTA Heading', 'Appears in the contact call-to-action near the bottom of the homepage.'],
+      ['contactText:textarea', 'CTA Description', 'Appears below the contact call-to-action heading.']
+    ]
+  },
+  {
+    id: 'footer',
+    title: 'Footer',
+    liveHash: 'site-footer',
+    placeholder: 'Website footer text',
+    description: 'These fields affect the footer shown at the bottom of the public website.',
+    fields: [
+      ['footerDescription:textarea', 'Footer Description', 'Appears under the clinic name in the website footer.'],
+      ['emergencyText:textarea', 'Emergency Note', 'Appears in the footer under opening hours and address.']
+    ]
+  }
+];
+
+function normalizeValue(value) {
+  return String(value || '').trim();
+}
+
+function validateHomepage(draft) {
+  const errors = {};
+  if (!normalizeValue(draft.heroTitle)) errors.heroTitle = 'Main Heading is required.';
+  if (!normalizeValue(draft.heroSubtitle)) errors.heroSubtitle = 'Short Description is required.';
+  if (!normalizeValue(draft.highlights)) errors.highlights = 'Add at least one highlight point.';
+  if (!normalizeValue(draft.treatmentsTitle)) errors.treatmentsTitle = 'Treatments heading is required.';
+  if (!normalizeValue(draft.reviewsTitle)) errors.reviewsTitle = 'Reviews heading is required.';
+  if (!normalizeValue(draft.blogTitle)) errors.blogTitle = 'Blog heading is required.';
+  if (!normalizeValue(draft.contactTitle)) errors.contactTitle = 'Contact CTA heading is required.';
+  return errors;
+}
+
+function sectionHasError(section, errors) {
+  return section.fields.some(([rawField]) => errors[rawField.split(':')[0]]);
+}
+
+function PreviewHeader({ title, text, fallback }) {
+  return (
+    <div>
+      <p className="eyebrow">Section preview</p>
+      <h3 className="mt-2 font-display text-3xl font-bold">{title || fallback}</h3>
+      {text && <p className="mt-3 text-sm leading-6 text-slate-600">{text}</p>}
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        {[1, 2, 3].map((item) => <span className="h-16 rounded-2xl bg-slate-100" key={item} />)}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminSettings({ collectionName, documentId, title }) {
   const [data, setData] = useState({});
+  const [draft, setDraft] = useState({});
+  const [preview, setPreview] = useState(null);
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
+  const [statusType, setStatusType] = useState('success');
   const fields = useMemo(() => fieldConfig(collectionName, documentId), [collectionName, documentId]);
+  const isHomepageEditor = collectionName === 'pages' && documentId === 'home';
 
   useEffect(() => {
     const fallback = defaultData(collectionName, documentId);
-    getDocument(collectionName, documentId, fallback).then((document) => setData({ ...fallback, ...document }));
+    getDocument(collectionName, documentId, fallback).then((document) => {
+      const nextData = { ...fallback, ...document };
+      setData(nextData);
+      setDraft(nextData);
+      setPreview(null);
+      setErrors({});
+      setStatus('');
+    });
   }, [collectionName, documentId]);
+
+  function updateDraft(event) {
+    const { name, value } = event.target;
+    setDraft((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: '' }));
+  }
+
+  function resetHomepage() {
+    setDraft(data);
+    setPreview(null);
+    setErrors({});
+    setStatus('');
+  }
+
+  function previewHomepage() {
+    const validationErrors = validateHomepage(draft);
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length) {
+      setStatusType('error');
+      setStatus('Please fix the highlighted fields before previewing.');
+      return;
+    }
+    setPreview(draft);
+    setStatusType('success');
+    setStatus('Preview updated. Review the section previews before saving.');
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const payload = Object.fromEntries(new FormData(event.currentTarget));
+    const payload = isHomepageEditor ? draft : Object.fromEntries(new FormData(event.currentTarget));
+    if (isHomepageEditor) {
+      const validationErrors = validateHomepage(payload);
+      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length) {
+        setStatusType('error');
+        setStatus('Please fix the highlighted fields before saving.');
+        return;
+      }
+    }
     try {
       await saveDocument(collectionName, documentId, payload);
       setData(payload);
-      setStatus('Settings saved.');
+      setPreview(payload);
+      setStatusType('success');
+      setStatus(isHomepageEditor ? 'Homepage Hero Section updated successfully.' : 'Settings saved.');
+      if (isHomepageEditor && event.nativeEvent?.submitter?.dataset?.view === 'website') {
+        window.open('/', '_blank', 'noopener,noreferrer');
+      }
     } catch (error) {
+      setStatusType('error');
       setStatus(error.message);
     }
+  }
+
+  if (isHomepageEditor) {
+    const previewData = preview || draft;
+
+    return (
+      <section>
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="eyebrow">Clinic Admin</p>
+            <h1 className="font-display text-4xl font-bold">{title}</h1>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Edit the homepage section by section. Each field explains where it appears on the live website.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button className="btn-secondary px-4 py-2" type="button" onClick={previewHomepage}><Eye size={17} /> Preview Changes</button>
+            <button className="btn-secondary px-4 py-2" type="button" onClick={resetHomepage}><RotateCcw size={17} /> Reset</button>
+          </div>
+        </div>
+
+        {status && <p className={`mt-5 rounded-2xl px-4 py-3 text-sm font-semibold ${statusType === 'success' ? 'bg-emerald-50 text-clinic-emerald' : 'bg-red-50 text-red-600'}`} role="status">{status}</p>}
+
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-6">
+          {homepageSections.map((section) => (
+            <article className={`rounded-[2rem] border bg-white p-5 shadow-glass ${sectionHasError(section, errors) ? 'border-red-200' : 'border-slate-100'}`} key={section.id}>
+              <div className="flex flex-col gap-3 border-b border-slate-100 pb-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="font-display text-2xl font-bold">{section.title}</h2>
+                  <p className="mt-1 text-sm text-slate-500">{section.description}</p>
+                </div>
+                <a className="btn-secondary px-4 py-2" href={`/#${section.liveHash}`} target="_blank" rel="noreferrer">View Live Section</a>
+              </div>
+
+              <div className="mt-5 grid gap-6 xl:grid-cols-[1.05fr_.95fr]">
+                <div className="grid gap-4 md:grid-cols-2">
+                  {section.fields.map(([rawField, friendlyLabel, helper]) => {
+                    const [field, type] = rawField.split(':');
+                    const isTextarea = type === 'textarea';
+                    return (
+                      <label className={`font-semibold ${isTextarea ? 'md:col-span-2' : ''}`} key={field}>
+                        {friendlyLabel}
+                        {isTextarea ? (
+                          <textarea className={`admin-input mt-2 min-h-28 ${errors[field] ? 'border-red-300 bg-red-50' : ''}`} name={field} value={draft[field] || ''} onChange={updateDraft} />
+                        ) : (
+                          <input className={`admin-input mt-2 ${errors[field] ? 'border-red-300 bg-red-50' : ''}`} name={field} value={draft[field] || ''} onChange={updateDraft} placeholder={field.toLowerCase().includes('image') ? 'Paste Cloudinary, GitHub, or public image URL' : ''} />
+                        )}
+                        <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">{helper}</span>
+                        {errors[field] && <span className="mt-1 block text-xs font-bold text-red-600">{errors[field]}</span>}
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-[1.5rem] border border-slate-100 bg-clinic-soft p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-emerald">{section.placeholder}</p>
+                  <div className="mt-4 overflow-hidden rounded-2xl bg-white shadow-glass">
+                    <div className="border-b border-slate-100 bg-slate-50 px-4 py-3 text-xs font-bold text-slate-500">Website preview</div>
+                    <div className="p-5">
+                      {section.id === 'hero' && (
+                        <div className="grid gap-4 md:grid-cols-[1fr_.75fr]">
+                          <div>
+                            <p className="eyebrow">{previewData.eyebrow || 'Small label'}</p>
+                            <h3 className="mt-2 font-display text-3xl font-bold">{previewData.heroTitle || 'Main Heading'}</h3>
+                            <p className="mt-3 text-sm leading-6 text-slate-600">{previewData.heroSubtitle || 'Short description appears here.'}</p>
+                            <div className="mt-4 flex flex-wrap gap-2">{String(previewData.highlights || '').split(/\r?\n|,/).filter(Boolean).slice(0, 3).map((item) => <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-clinic-emerald" key={item}>{item.trim()}</span>)}</div>
+                          </div>
+                          <div className="grid min-h-40 place-items-center rounded-2xl bg-slate-100 text-center text-xs font-semibold text-slate-500">{previewData.heroImage ? 'Doctor image will appear here' : 'Doctor image placeholder'}</div>
+                        </div>
+                      )}
+                      {section.id === 'features' && (
+                        <div className="grid gap-3 sm:grid-cols-3">{[1, 2, 3].map((index) => <div className="rounded-2xl border border-slate-100 p-3" key={index}><strong className="text-sm">{previewData[`feature${index}Title`] || `Feature ${index}`}</strong><p className="mt-2 text-xs leading-5 text-slate-500">{previewData[`feature${index}Text`] || 'Feature description appears here.'}</p></div>)}</div>
+                      )}
+                      {section.id === 'treatments' && <PreviewHeader title={previewData.treatmentsTitle} text={previewData.treatmentsText} fallback="Conditions We Treat" />}
+                      {section.id === 'reviews' && <PreviewHeader title={previewData.reviewsTitle} text={previewData.reviewsText} fallback="Patient experiences" />}
+                      {section.id === 'blog' && <PreviewHeader title={previewData.blogTitle} fallback="Latest from the clinic" />}
+                      {section.id === 'contact' && <PreviewHeader title={previewData.contactTitle} text={previewData.contactText} fallback="Visit or reach us" />}
+                      {section.id === 'footer' && <div className="rounded-2xl bg-clinic-ink p-4 text-white"><strong>Clinic footer</strong><p className="mt-2 text-sm text-white/70">{previewData.footerDescription || 'Footer description appears here.'}</p><p className="mt-3 text-xs text-white/60">{previewData.emergencyText || 'Emergency note appears here.'}</p></div>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+
+          <div className="sticky bottom-4 z-30 flex flex-col gap-3 rounded-[2rem] border border-slate-100 bg-white/95 p-4 shadow-luxury backdrop-blur md:flex-row md:items-center md:justify-between">
+            <p className="text-sm font-semibold text-slate-600">Preview changes first, then save when the homepage looks right.</p>
+            <div className="flex flex-wrap gap-2">
+              <button className="btn-secondary px-4 py-2" type="button" onClick={previewHomepage}><Eye size={17} /> Preview Changes</button>
+              <button className="btn-secondary px-4 py-2" type="button" onClick={resetHomepage}><Undo2 size={17} /> Cancel</button>
+              <button className="btn-primary px-4 py-2" type="submit" data-view="website"><Save size={17} /> Save & View Website</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    );
   }
 
   return (

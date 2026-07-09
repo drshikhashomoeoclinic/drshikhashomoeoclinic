@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <main className="bg-white">
       <SEO />
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#fffdf8_0%,#f6fbfc_52%,#edf7f4_100%)]">
+      <section id="home-hero" className="relative overflow-hidden bg-[linear-gradient(135deg,#fffdf8_0%,#f6fbfc_52%,#edf7f4_100%)]">
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-teal-50/80 to-transparent" />
         <div className="container-lux relative grid min-h-[680px] items-center gap-10 py-12 lg:grid-cols-[1.02fr_.98fr] lg:py-14">
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
@@ -80,7 +80,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-16">
+      <section id="home-features" className="py-12 md:py-16">
         <div className="container-lux grid gap-5 md:grid-cols-3">
           {homeData.featureCards.map((card, index) => {
             const Icon = featureIcons[index] || ShieldCheck;
@@ -95,7 +95,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-pad bg-clinic-soft">
+      <section id="home-treatments" className="section-pad bg-clinic-soft">
         <div className="container-lux">
           <SectionHeader eyebrow="Treatments" title={homeData.treatmentsTitle} text={homeData.treatmentsText} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
@@ -103,17 +103,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-pad">
+      <section id="home-reviews" className="section-pad">
         <div className="container-lux grid gap-8 lg:grid-cols-[.82fr_1.18fr]">
           <SectionHeader eyebrow="Patient reviews" title={homeData.reviewsTitle} text={homeData.reviewsText} />
           <div className="grid gap-4">{reviews.slice(0, 3).map((review) => <motion.div whileHover={{ y: -3 }} className="rounded-[1.5rem] border border-slate-100 bg-white p-6 shadow-glass" key={review.id || review.name}><p className="text-sm tracking-[0.18em] text-amber-500">{'★'.repeat(review.rating || 5)}</p><p className="mt-3 text-base leading-7 text-slate-700">"{review.text}"</p><strong className="mt-4 block text-sm text-clinic-ink">{review.name}</strong></motion.div>)}</div>
         </div>
       </section>
 
-      <section className="section-pad bg-clinic-soft">
+      <section id="home-blog" className="section-pad bg-clinic-soft">
         <div className="container-lux">
           <SectionHeader eyebrow="Health notes" title={homeData.blogTitle} />
           <div className="grid gap-6 md:grid-cols-3">{posts.slice(0, 3).map((post) => <BlogCard key={post.id || post.slug || post.title} post={post} />)}</div>
+        </div>
+      </section>
+
+      <section id="home-contact-cta" className="section-pad">
+        <div className="container-lux rounded-[2rem] bg-clinic-ink p-6 text-white shadow-luxury md:p-10">
+          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-200">Contact</p>
+              <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">{homeData.contactTitle}</h2>
+              <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link className="btn-primary" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
+              <a className="btn-secondary bg-white text-clinic-ink" href={`tel:${site.phone}`}><Phone size={18} /> Call Clinic</a>
+            </div>
+          </div>
         </div>
       </section>
     </main>
