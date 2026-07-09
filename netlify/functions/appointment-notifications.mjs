@@ -2,6 +2,10 @@ const defaultClinicName = "Dr. Shikha's Homoeo Clinic";
 const clinicAddress = '113 Debaipukur Road, Near Amtallah Rickshaw Stand, Hindmotor, Hooghly, PIN-712233';
 const clinicContact = '7001431935';
 
+function clinicWhatsappNumber() {
+  return clean(process.env.CLINIC_WHATSAPP_NUMBER) || clinicContact;
+}
+
 function json(statusCode, body) {
   return {
     statusCode,
@@ -207,7 +211,7 @@ export async function handler(event) {
       whatsapp: {
         providerConfigured: whatsappProviderConfigured,
         patientLink: whatsappLink(appointment.phone || appointment.mobile, patientWhatsappMessage),
-        doctorLink: whatsappLink(process.env.CLINIC_WHATSAPP_NUMBER, doctorWhatsappMessage),
+        doctorLink: whatsappLink(clinicWhatsappNumber(), doctorWhatsappMessage),
         patientMessage: patientWhatsappMessage,
         doctorMessage: doctorWhatsappMessage,
         sends: []
@@ -222,7 +226,7 @@ export async function handler(event) {
       if (clean(appointment.email)) result.emails.push(await safeSendEmail({ to: appointment.email, action: 'appointment-confirmed', appointment }));
       result.emails.push(await safeSendEmail({ to: process.env.CLINIC_EMAIL || process.env.ADMIN_APPOINTMENT_EMAIL, action: 'appointment-confirmed-admin', appointment }));
       result.whatsapp.sends.push(await safeSendWhatsApp({ to: appointment.phone || appointment.mobile, message: patientWhatsappMessage }));
-      result.whatsapp.sends.push(await safeSendWhatsApp({ to: process.env.CLINIC_WHATSAPP_NUMBER, message: doctorWhatsappMessage }));
+      result.whatsapp.sends.push(await safeSendWhatsApp({ to: clinicWhatsappNumber(), message: doctorWhatsappMessage }));
     } else if (action === 'appointment-reminder' || action === 'follow-up-reminder') {
       if (clean(appointment.email)) result.emails.push(await safeSendEmail({ to: appointment.email, action, appointment }));
     }

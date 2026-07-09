@@ -41,7 +41,6 @@ function validateForm(form) {
   if (!required(form.complaint)) return 'Please enter the chief complaint.';
   if (!required(form.date)) return 'Please choose a preferred date.';
   if (!required(form.timeSlot)) return 'Please choose a preferred time slot.';
-  if (!required(form.notes)) return 'Please add additional notes. Enter NA if there are none.';
   return '';
 }
 
@@ -127,7 +126,7 @@ export default function Appointment() {
             </div>
             <label className="mt-4 block font-semibold">Address<textarea className="admin-input mt-2 min-h-24" name="address" value={form.address} onChange={updateField} required /></label>
             <label className="mt-4 block font-semibold">Chief Complaint<textarea className="admin-input mt-2 min-h-32" name="complaint" value={form.complaint} onChange={updateField} required /></label>
-            <label className="mt-4 block font-semibold">Additional Notes<textarea className="admin-input mt-2 min-h-28" name="notes" value={form.notes} onChange={updateField} required /></label>
+            <label className="mt-4 block font-semibold">Additional Notes <span className="text-xs text-slate-400">(optional)</span><textarea className="admin-input mt-2 min-h-28" name="notes" value={form.notes} onChange={updateField} /></label>
             <button className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-70" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Request Appointment'}</button>
             {status && <p className={`mt-4 rounded-2xl p-4 text-sm font-semibold ${statusType === 'success' ? 'bg-emerald-50 text-clinic-emerald' : 'bg-red-50 text-red-600'}`} role="status">{status}</p>}
           </form>

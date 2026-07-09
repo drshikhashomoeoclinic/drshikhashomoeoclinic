@@ -4,3 +4,4 @@ dist/
 .env
 .env.local
 codex-temp-index
+.tmp/

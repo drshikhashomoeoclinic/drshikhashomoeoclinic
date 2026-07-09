@@ -1,5 +1,5 @@
 export function installAnalytics() {
-  const gaId = import.meta.env.VITE_GA_ID;
+  const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID || import.meta.env.VITE_GA_ID;
   const clarityId = import.meta.env.VITE_CLARITY_ID;
 
   if (gaId && !document.querySelector(`[src*="${gaId}"]`)) {

@@ -19,9 +19,8 @@ export default function Home() {
   const shouldShowHeroImage = Boolean(homeData.heroImage) && !heroImageFailed;
 
   useEffect(() => {
-    console.log('Loaded homepage object:', homeData);
     setHeroImageFailed(false);
-  }, [homeData]);
+  }, [homeData.heroImage]);
 
   return (
     <main className="bg-white">

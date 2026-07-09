@@ -35,26 +35,29 @@ function confirmationFallback(action, appointment = {}) {
 }
 
 export async function sendAppointmentNotification(action, appointment) {
-  try {
-    const response = await fetch('/.netlify/functions/appointment-notifications', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, appointment })
-    });
-    if (!response.ok) {
-      if (action === 'appointment-confirmed') return confirmationFallback(action, appointment);
-      return { ok: false };
+  const endpoints = ['/api/appointment-notifications', '/.netlify/functions/appointment-notifications'];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, appointment })
+      });
+      if (!response.ok) continue;
+      const data = await response.json();
+      return {
+        ok: true,
+        data,
+        emailSkipped: Array.isArray(data.emails) && data.emails.some((item) => item?.skipped || item?.failed),
+        whatsappSkipped: Array.isArray(data.whatsapp?.sends) && data.whatsapp.sends.some((item) => item?.skipped || item?.failed),
+        whatsapp: data.whatsapp || {}
+      };
+    } catch {
+      // Try the next deployment endpoint before falling back to WhatsApp Web links.
     }
-    const data = await response.json();
-    return {
-      ok: true,
-      data,
-      emailSkipped: Array.isArray(data.emails) && data.emails.length > 0 && data.emails.some((item) => item?.skipped || item?.failed),
-      whatsappSkipped: Array.isArray(data.whatsapp?.sends) && data.whatsapp.sends.some((item) => item?.skipped || item?.failed),
-      whatsapp: data.whatsapp || {}
-    };
-  } catch {
-    if (action === 'appointment-confirmed') return confirmationFallback(action, appointment);
-    return { ok: false };
   }
+
+  if (action === 'appointment-confirmed') return confirmationFallback(action, appointment);
+  return { ok: false };
 }
