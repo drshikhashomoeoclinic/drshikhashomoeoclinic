@@ -32,12 +32,12 @@ function ServiceMedia({ service }) {
 
 export default function TreatmentCard({ service }) {
   return (
-    <motion.article whileHover={{ y: -8, scale: 1.01 }} className="group glass-card glass-card-hover h-full p-6">
+    <motion.article whileHover={{ y: -9, scale: 1.012 }} className="group glass-card glass-card-hover h-full p-7">
       <ServiceMedia service={service} />
       <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-clinic-gold">{service.category}</p>
-      <h3 className="mt-3 font-display text-xl font-bold text-clinic-ink">{service.title}</h3>
+      <h3 className="mt-3 font-display text-2xl font-bold leading-tight text-clinic-ink">{service.title}</h3>
       <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
-      <Link to={`/treatments/${service.slug}`} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-clinic-emerald">
+      <Link to={`/treatments/${service.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-clinic-emerald">
         View treatment <Icons.ArrowUpRight size={18} className="transition group-hover:translate-x-1" />
       </Link>
     </motion.article>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, CalendarDays, Clock, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, Clock, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogCard from '../components/cards/BlogCard.jsx';
@@ -57,6 +57,11 @@ export default function Home() {
     : String(homeData.highlights || '').split(',').map((item) => item.trim()).filter(Boolean);
   const featureIcons = [ShieldCheck, Sparkles, Stethoscope];
   const shouldShowHeroImage = Boolean(homeData.heroImage) && !heroImageFailed;
+  const heroStats = [
+    ['Clinic', site.location],
+    ['Timing', site.hours],
+    ['Contact', site.phone]
+  ];
 
   useEffect(() => {
     setHeroImageFailed(false);
@@ -68,21 +73,29 @@ export default function Home() {
       <section id="home-hero" className="relative overflow-hidden">
         <FloatingBubbles />
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/70 to-transparent" />
-        <div className="container-lux relative grid min-h-[720px] items-center gap-12 py-14 lg:grid-cols-[1.02fr_.98fr] lg:py-16">
+        <div className="container-lux relative grid min-h-[760px] items-center gap-12 py-16 lg:grid-cols-[1.02fr_.98fr] lg:py-20">
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62 }}>
-            <p className="eyebrow">{homeData.eyebrow}</p>
-            <h1 className="mt-5 max-w-3xl font-display text-5xl font-extrabold tracking-tight text-clinic-ink sm:text-6xl lg:text-[4.8rem] lg:leading-[0.95]">{homeData.heroTitle}</h1>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/58 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-clinic-emerald shadow-glass backdrop-blur-2xl"><Award size={15} className="text-clinic-gold" /> {homeData.eyebrow}</div>
+            <h1 className="mt-6 max-w-3xl font-display text-5xl font-extrabold tracking-tight text-clinic-ink sm:text-6xl lg:text-[5.15rem] lg:leading-[0.92]">{homeData.heroTitle}</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{homeData.heroSubtitle || `${doctor.doctorName || site.doctorName} offers detailed case-taking, gentle medicines, and structured follow-up for acute and chronic health concerns.`}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link className="btn-primary px-6 py-3.5" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
               <a className="btn-secondary px-6 py-3.5" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> Get Directions</a>
+            </div>
+            <div className="mt-8 grid overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/48 shadow-glass backdrop-blur-2xl sm:grid-cols-3">
+              {heroStats.map(([label, value]) => (
+                <div className="border-white/55 p-4 sm:border-r last:border-r-0" key={label}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{label}</p>
+                  <p className="mt-1 text-sm font-semibold leading-5 text-clinic-ink">{value}</p>
+                </div>
+              ))}
             </div>
             <div className="mt-9 grid gap-3 sm:grid-cols-3">
               {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
                 <motion.div {...fadeUp(index * 0.06)} className="glass rounded-[1.25rem] px-4 py-4 text-sm font-semibold text-slate-700 ring-1 ring-white/35" key={item}>{item}</motion.div>
               ))}
             </div>
-            <div className="mt-7 grid gap-3 text-sm font-semibold text-slate-700 sm:grid-cols-3">
+            <div className="mt-7 hidden gap-3 text-sm font-semibold text-slate-700 sm:grid-cols-3">
               <div className="glass flex items-center gap-2 rounded-full px-4 py-3"><MapPin size={17} className="text-clinic-emerald" /> {site.location}</div>
               <div className="glass flex items-center gap-2 rounded-full px-4 py-3"><Clock size={17} className="text-clinic-emerald" /> {site.hours}</div>
               <div className="glass flex items-center gap-2 rounded-full px-4 py-3"><Phone size={17} className="text-clinic-emerald" /> {site.phone}</div>
@@ -93,7 +106,9 @@ export default function Home() {
             <motion.span aria-hidden="true" className="absolute -right-4 top-10 h-72 w-72 rounded-full border border-clinic-gold/45 shadow-glow md:h-96 md:w-96" animate={{ rotate: 360 }} transition={{ duration: 42, repeat: Infinity, ease: 'linear' }} />
             <span className="floating-bubble -left-5 top-16 size-16" />
             <span className="floating-bubble bottom-24 right-2 size-12" />
-            <div className="glass-card relative mx-auto max-w-[520px] overflow-hidden rounded-[2rem] p-3 shadow-luxury">
+            <div className="absolute -left-4 top-28 z-10 hidden rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-sm font-bold text-clinic-emerald shadow-glass backdrop-blur-2xl md:block">BHMS Consultant</div>
+            <div className="absolute -right-2 bottom-40 z-10 hidden rounded-2xl border border-white/70 bg-white/70 px-4 py-3 text-sm font-bold text-clinic-ink shadow-glass backdrop-blur-2xl md:block">Personalised care</div>
+            <div className="premium-panel relative mx-auto max-w-[540px] p-3">
               <div className="relative min-h-[440px] overflow-hidden rounded-[1.55rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 md:min-h-[540px]">
                 {shouldShowHeroImage ? (
                   <img
@@ -125,13 +140,14 @@ export default function Home() {
       </section>
 
       <section id="home-features" className="relative py-12 md:py-16">
+        <div className="container-lux mb-10 h-px gold-hairline" />
         <div className="container-lux grid auto-rows-fr gap-5 md:grid-cols-3">
           {homeData.featureCards.map((card, index) => {
             const Icon = featureIcons[index] || ShieldCheck;
             return (
-              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-6" key={card.title}>
+              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-7" key={card.title}>
                 <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm"><Icon size={24} /></span>
-                <h3 className="mt-6 font-display text-xl font-bold">{card.title}</h3>
+                <h3 className="mt-7 font-display text-2xl font-bold">{card.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{card.text}</p>
               </motion.div>
             );
@@ -139,7 +155,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-treatments" className="section-pad relative bg-white/30">
+      <section id="home-treatments" className="section-pad relative bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Treatments" title={homeData.treatmentsTitle} text={homeData.treatmentsText} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
@@ -148,11 +164,12 @@ export default function Home() {
       </section>
 
       <section id="home-reviews" className="section-pad relative">
+        <div className="absolute inset-x-0 top-0 h-px gold-hairline" />
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
           <SectionHeader eyebrow="Patient reviews" title={homeData.reviewsTitle} text={homeData.reviewsText} />
           <div className="flex snap-x gap-5 overflow-x-auto pb-4">
             {reviews.slice(0, 6).map((review, index) => (
-              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[280px] snap-start p-6 sm:min-w-[340px]" key={review.id || review.name}>
+              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[280px] snap-start p-7 sm:min-w-[360px]" key={review.id || review.name}>
                 <div className="flex items-center justify-between gap-4">
                   {review.image ? (
                     <img className="size-12 rounded-full object-cover" src={review.image} alt={review.name || 'Patient'} loading="lazy" referrerPolicy="no-referrer" />
@@ -170,7 +187,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-blog" className="section-pad relative bg-white/30">
+      <section id="home-blog" className="section-pad relative bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Health notes" title={homeData.blogTitle} />
           <div className="grid gap-6 md:grid-cols-3">{posts.slice(0, 3).map((post) => <BlogCard key={post.id || post.slug || post.title} post={post} />)}</div>
@@ -178,7 +195,7 @@ export default function Home() {
       </section>
 
       <section id="home-contact-cta" className="section-pad relative">
-        <div className="container-lux glass-card overflow-hidden rounded-[2rem] bg-clinic-ink/95 p-6 text-white shadow-luxury md:p-10">
+        <div className="container-lux premium-panel bg-clinic-ink/95 p-6 text-white shadow-luxury md:p-10">
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
