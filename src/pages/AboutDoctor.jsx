@@ -1,4 +1,4 @@
-import { Award, GraduationCap, MapPin, ShieldCheck, Sparkles, Stethoscope } from 'lucide-react';
+import { Award, GraduationCap, MapPin, ShieldCheck, Sparkles, Stethoscope, UsersRound } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SEO from '../components/seo/SEO.jsx';
 import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
@@ -16,16 +16,17 @@ export default function AboutDoctor() {
   const doctorName = doctor.doctorName || site.doctorName;
   const qualification = doctor.qualification || site.qualification;
   const experience = doctor.experience || site.experience;
+  const patients = doctor.patients || site.patients;
   const about = doctor.about || site.about || `${doctorName} offers attentive homoeopathic consultation with careful case-taking, gentle medicines, and structured follow-up for families in ${site.location || 'Hindmotor, Uttarpara'}.`;
   const doctorPhoto = doctor.doctorPhoto || doctor.image || '';
   const certificates = splitList(doctor.certificates || 'Bachelor of Homoeopathic Medicine & Surgery (BHMS) * Registered Homoeopathic Practitioner * Chronic disease consultation * Continued medical learning');
-  const achievements = splitList(doctor.achievements || `${site.clinicName}, ${site.location || site.address}`);
+  const achievements = splitList(doctor.achievements || 'Personalised treatment planning * Root-cause focused consultation * Trusted by families across Hindmotor and Uttarpara');
 
   const profileCards = [
     { icon: GraduationCap, label: 'Qualification', value: qualification },
-    { icon: Award, label: 'Experience', value: `${experience} years experience` },
-    { icon: ShieldCheck, label: 'Approach', value: 'Personalised case-taking and follow-up care' },
-    { icon: MapPin, label: 'Clinic', value: `${site.clinicName}, ${site.location || site.address}` }
+    { icon: Award, label: 'Experience', value: experience },
+    { icon: UsersRound, label: 'Patients', value: patients },
+    { icon: MapPin, label: 'Clinic', value: site.location || site.address }
   ];
 
   return (
@@ -57,7 +58,7 @@ export default function AboutDoctor() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.08 }}>
-            <p className="eyebrow">Doctor Profile</p>
+            <p className="eyebrow">About</p>
             <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight text-clinic-ink sm:text-5xl lg:text-6xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-700">{about}</p>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
@@ -78,13 +79,13 @@ export default function AboutDoctor() {
       </section>
 
       <section className="pb-20 md:pb-24">
-        <div className="container-lux grid gap-6 lg:grid-cols-[1fr_.8fr]">
+        <div className="container-lux grid gap-6 lg:grid-cols-2">
           <motion.article initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-card p-5 sm:p-7">
             <div className="flex items-center gap-3">
               <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/70 text-clinic-emerald"><Sparkles size={23} /></span>
               <div>
-                <p className="eyebrow">Training & Credentials</p>
-                <h3 className="font-display text-3xl font-bold text-clinic-ink">Professional foundation</h3>
+                <p className="eyebrow">Certificates</p>
+                <h3 className="font-display text-3xl font-bold text-clinic-ink">Training & credentials</h3>
               </div>
             </div>
             <div className="mt-6 grid gap-3">
@@ -96,20 +97,30 @@ export default function AboutDoctor() {
 
           <motion.article initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.08 }} className="glass-card p-5 sm:p-7">
             <div className="flex items-center gap-3">
-              <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/70 text-clinic-emerald"><MapPin size={23} /></span>
+              <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/70 text-clinic-emerald"><ShieldCheck size={23} /></span>
               <div>
-                <p className="eyebrow">Clinic Location</p>
-                <h3 className="font-display text-3xl font-bold text-clinic-ink">Consultation address</h3>
+                <p className="eyebrow">Achievements</p>
+                <h3 className="font-display text-3xl font-bold text-clinic-ink">Clinical highlights</h3>
               </div>
             </div>
             <div className="mt-6 grid gap-3">
               {achievements.map((item) => (
                 <p className="rounded-2xl border border-white/70 bg-white/62 p-4 text-base leading-7 text-slate-700" key={item}>{item}</p>
               ))}
-              <p className="rounded-2xl border border-white/70 bg-white/62 p-4 text-base leading-7 text-slate-700">{site.address}</p>
             </div>
           </motion.article>
         </div>
+
+        <motion.article initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="container-lux mt-6 glass-card p-5 sm:p-7">
+          <div className="flex items-center gap-3">
+            <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/70 text-clinic-emerald"><MapPin size={23} /></span>
+            <div>
+              <p className="eyebrow">Clinic Location</p>
+              <h3 className="font-display text-3xl font-bold text-clinic-ink">Consultation address</h3>
+            </div>
+          </div>
+          <p className="mt-6 rounded-2xl border border-white/70 bg-white/62 p-4 text-base leading-7 text-slate-700">{site.address}</p>
+        </motion.article>
       </section>
     </main>
   );
