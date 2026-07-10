@@ -25,7 +25,7 @@ const bubbles = [
 
 function FloatingBubbles() {
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 hidden overflow-hidden sm:block">
       {bubbles.map(([className, delay], index) => (
         <motion.span
           aria-hidden="true"
@@ -73,24 +73,24 @@ export default function Home() {
       <section id="home-hero" className="relative overflow-hidden">
         <FloatingBubbles />
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/70 to-transparent" />
-        <div className="container-lux relative grid min-h-[760px] items-center gap-12 py-16 lg:grid-cols-[1.02fr_.98fr] lg:py-20">
+        <div className="container-lux relative grid min-h-[auto] items-center gap-10 py-10 sm:py-14 lg:min-h-[760px] lg:grid-cols-[1.02fr_.98fr] lg:gap-12 lg:py-20">
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/58 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-clinic-emerald shadow-glass backdrop-blur-2xl"><Award size={15} className="text-clinic-gold" /> {homeData.eyebrow}</div>
-            <h1 className="mt-6 max-w-3xl font-display text-5xl font-extrabold tracking-tight text-clinic-ink sm:text-6xl lg:text-[5.15rem] lg:leading-[0.92]">{homeData.heroTitle}</h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{homeData.heroSubtitle || `${doctor.doctorName || site.doctorName} offers detailed case-taking, gentle medicines, and structured follow-up for acute and chronic health concerns.`}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link className="btn-primary px-6 py-3.5" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
-              <a className="btn-secondary px-6 py-3.5" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> Get Directions</a>
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-clinic-emerald shadow-glass backdrop-blur-2xl sm:px-4 sm:text-xs"><Award size={15} className="shrink-0 text-clinic-gold" /> <span className="truncate">{homeData.eyebrow}</span></div>
+            <h1 className="mt-5 max-w-3xl font-display text-4xl font-extrabold leading-[0.98] tracking-tight text-clinic-ink sm:mt-6 sm:text-6xl lg:text-[5.15rem] lg:leading-[0.92]">{homeData.heroTitle}</h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{homeData.heroSubtitle || `${doctor.doctorName || site.doctorName} offers detailed case-taking, gentle medicines, and structured follow-up for acute and chronic health concerns.`}</p>
+            <div className="mt-7 grid gap-3 sm:mt-8 sm:flex sm:flex-wrap">
+              <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
+              <a className="btn-secondary w-full px-6 py-3.5 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> Get Directions</a>
             </div>
-            <div className="mt-8 grid overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/48 shadow-glass backdrop-blur-2xl sm:grid-cols-3">
+            <div className="mt-7 grid overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/55 shadow-glass backdrop-blur-2xl sm:mt-8 sm:grid-cols-3">
               {heroStats.map(([label, value]) => (
-                <div className="border-white/55 p-4 sm:border-r last:border-r-0" key={label}>
+                <div className="border-b border-white/55 p-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0" key={label}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{label}</p>
                   <p className="mt-1 text-sm font-semibold leading-5 text-clinic-ink">{value}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-9 grid gap-3 sm:grid-cols-3">
+            <div className="mt-7 grid gap-3 sm:mt-9 sm:grid-cols-3">
               {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
                 <motion.div {...fadeUp(index * 0.06)} className="glass rounded-[1.25rem] px-4 py-4 text-sm font-semibold text-slate-700 ring-1 ring-white/35" key={item}>{item}</motion.div>
               ))}
@@ -102,32 +102,32 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.08 }} className="relative">
-            <motion.span aria-hidden="true" className="absolute -right-4 top-10 h-72 w-72 rounded-full border border-clinic-gold/45 shadow-glow md:h-96 md:w-96" animate={{ rotate: 360 }} transition={{ duration: 42, repeat: Infinity, ease: 'linear' }} />
-            <span className="floating-bubble -left-5 top-16 size-16" />
-            <span className="floating-bubble bottom-24 right-2 size-12" />
+          <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.08 }} className="relative mx-auto w-full max-w-[540px] lg:max-w-none">
+            <motion.span aria-hidden="true" className="absolute -right-1 top-10 h-56 w-56 rounded-full border border-clinic-gold/45 shadow-glow sm:-right-4 sm:h-72 sm:w-72 md:h-96 md:w-96" animate={{ rotate: 360 }} transition={{ duration: 42, repeat: Infinity, ease: 'linear' }} />
+            <span className="floating-bubble -left-5 top-16 hidden size-16 sm:block" />
+            <span className="floating-bubble bottom-24 right-2 hidden size-12 sm:block" />
             <div className="absolute -left-4 top-28 z-10 hidden rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-sm font-bold text-clinic-emerald shadow-glass backdrop-blur-2xl md:block">BHMS Consultant</div>
             <div className="absolute -right-2 bottom-40 z-10 hidden rounded-2xl border border-white/70 bg-white/70 px-4 py-3 text-sm font-bold text-clinic-ink shadow-glass backdrop-blur-2xl md:block">Personalised care</div>
             <div className="premium-panel relative mx-auto max-w-[540px] p-3">
-              <div className="relative min-h-[440px] overflow-hidden rounded-[1.55rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 md:min-h-[540px]">
+              <div className="relative min-h-[340px] overflow-hidden rounded-[1.55rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 sm:min-h-[440px] md:min-h-[540px]">
                 {shouldShowHeroImage ? (
                   <img
                     src={homeData.heroImage}
                     alt="Hero"
-                    className="block h-full min-h-[440px] w-full object-cover object-center md:min-h-[540px]"
+                    className="block h-full min-h-[340px] w-full object-cover object-center sm:min-h-[440px] md:min-h-[540px]"
                     loading="eager"
                     referrerPolicy="no-referrer"
                     onError={() => setHeroImageFailed(true)}
                   />
                 ) : (
-                  <div className="grid min-h-[440px] place-items-center p-8 text-center md:min-h-[540px]">
+                  <div className="grid min-h-[340px] place-items-center p-8 text-center sm:min-h-[440px] md:min-h-[540px]">
                     <Stethoscope className="mx-auto text-clinic-emerald" size={68} />
                   </div>
                 )}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-clinic-ink/30 via-transparent to-white/5" />
               </div>
-              <div className="absolute inset-x-6 bottom-6 rounded-[1.5rem] border border-white/70 bg-white/72 p-4 shadow-glass backdrop-blur-2xl">
-                <h2 className="font-display text-2xl font-bold leading-tight">{doctor.doctorName || site.doctorName}</h2>
+              <div className="relative mt-3 rounded-[1.5rem] border border-white/70 bg-white/75 p-4 shadow-glass backdrop-blur-2xl sm:absolute sm:inset-x-6 sm:bottom-6 sm:mt-0">
+                <h2 className="font-display text-xl font-bold leading-tight sm:text-2xl">{doctor.doctorName || site.doctorName}</h2>
                 <p className="mt-1 text-sm font-semibold text-clinic-emerald">{doctor.qualification || site.qualification}</p>
                 <div className="mt-4 grid w-full grid-cols-2 gap-3">
                   <div className="rounded-2xl border border-white/70 bg-white/60 p-3"><strong className="block text-xl text-clinic-emerald">{doctor.experience || site.experience}</strong><span className="text-xs font-medium text-slate-500">Years</span></div>
@@ -139,15 +139,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-features" className="relative py-12 md:py-16">
-        <div className="container-lux mb-10 h-px gold-hairline" />
+      <section id="home-features" className="relative py-10 md:py-16">
+        <div className="container-lux mb-8 h-px gold-hairline md:mb-10" />
         <div className="container-lux grid auto-rows-fr gap-5 md:grid-cols-3">
           {homeData.featureCards.map((card, index) => {
             const Icon = featureIcons[index] || ShieldCheck;
             return (
-              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-7" key={card.title}>
+              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-5 sm:p-7" key={card.title}>
                 <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm"><Icon size={24} /></span>
-                <h3 className="mt-7 font-display text-2xl font-bold">{card.title}</h3>
+                <h3 className="mt-5 font-display text-xl font-bold sm:mt-7 sm:text-2xl">{card.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{card.text}</p>
               </motion.div>
             );
@@ -167,9 +167,9 @@ export default function Home() {
         <div className="absolute inset-x-0 top-0 h-px gold-hairline" />
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
           <SectionHeader eyebrow="Patient reviews" title={homeData.reviewsTitle} text={homeData.reviewsText} />
-          <div className="flex snap-x gap-5 overflow-x-auto pb-4">
+          <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:gap-5 sm:px-0">
             {reviews.slice(0, 6).map((review, index) => (
-              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[280px] snap-start p-7 sm:min-w-[360px]" key={review.id || review.name}>
+              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[260px] snap-start p-5 sm:min-w-[360px] sm:p-7" key={review.id || review.name}>
                 <div className="flex items-center justify-between gap-4">
                   {review.image ? (
                     <img className="size-12 rounded-full object-cover" src={review.image} alt={review.name || 'Patient'} loading="lazy" referrerPolicy="no-referrer" />
@@ -195,7 +195,7 @@ export default function Home() {
       </section>
 
       <section id="home-contact-cta" className="section-pad relative">
-        <div className="container-lux premium-panel bg-clinic-ink/95 p-6 text-white shadow-luxury md:p-10">
+        <div className="container-lux premium-panel bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-10">
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
@@ -203,9 +203,9 @@ export default function Home() {
               <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">{homeData.contactTitle}</h2>
               <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText}</p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link className="btn-primary" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
-              <a className="btn-secondary bg-white/80 text-clinic-emerald" href={`tel:${site.phone}`}><Phone size={18} /> Call Clinic</a>
+            <div className="grid gap-3 sm:flex sm:flex-wrap">
+              <Link className="btn-primary w-full sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
+              <a className="btn-secondary w-full bg-white/80 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> Call Clinic</a>
             </div>
           </div>
         </div>

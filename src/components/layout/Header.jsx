@@ -18,11 +18,11 @@ export default function Header() {
   const { site } = useClinic();
   return (
     <header className="sticky top-0 z-50 py-3">
-      <div className="container-lux flex h-16 items-center justify-between gap-4 rounded-full border border-white/65 bg-white/62 px-3 shadow-glass backdrop-blur-2xl md:px-5">
-        <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid size-11 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-lg font-bold text-white shadow-lg shadow-emerald-900/20">S</span>
-          <span>
-            <strong className="block font-display text-lg leading-none text-clinic-ink">{site.clinicName}</strong>
+      <div className="container-lux flex h-16 items-center justify-between gap-3 rounded-full border border-white/65 bg-white/62 px-3 shadow-glass backdrop-blur-2xl md:gap-4 md:px-5">
+        <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
+          <span className="grid size-10 shrink-0 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-base font-bold text-white shadow-lg shadow-emerald-900/20 md:size-11 md:text-lg">S</span>
+          <span className="min-w-0">
+            <strong className="block truncate font-display text-sm leading-none text-clinic-ink sm:text-lg">{site.clinicName}</strong>
             <small className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
           </span>
         </Link>
