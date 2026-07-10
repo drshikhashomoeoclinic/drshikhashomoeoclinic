@@ -58,15 +58,15 @@ export default function Home() {
   const featureIcons = [ShieldCheck, Sparkles, Stethoscope];
   const shouldShowHeroImage = Boolean(homeData.heroImage) && !heroImageFailed;
   const heroStats = [
-    ['Clinic', site.location],
-    ['Timing', site.hours],
-    ['Contact', site.phone]
+    ['Visit Us', site.location],
+    ['Open Hours', site.hours],
+    ['Call / WhatsApp', site.phone]
   ];
   const faqs = [
-    ['How do I book an appointment?', 'Use the Book Appointment button, call the clinic, or send a WhatsApp message.'],
-    ['Can I view treatments before booking?', 'Yes. The treatments section gives a quick overview, and each card opens a detailed page.'],
+    ['How do I book an appointment?', 'Tap Book Appointment, call the clinic, or send a WhatsApp message. The clinic will confirm your visit.'],
+    ['What should I share before consultation?', 'Share your main complaint, age, mobile number, preferred date, and any important medical history.'],
     ['Where is the clinic located?', site.address || 'Hindmotor, Uttarpara'],
-    ['Are reviews and gallery updated from admin?', 'Yes. Public content is loaded dynamically from the existing Firestore collections.']
+    ['Can I read patient reviews?', 'Yes. You can see patient experiences here and open the official Google review page from the Reviews section.']
   ];
 
   useEffect(() => {
@@ -83,9 +83,9 @@ export default function Home() {
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62 }}>
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-clinic-emerald shadow-glass backdrop-blur-2xl sm:px-4 sm:text-xs"><Award size={15} className="shrink-0 text-clinic-gold" /> <span className="truncate">{homeData.eyebrow}</span></div>
             <h1 className="mt-5 max-w-3xl font-display text-[2.75rem] font-bold leading-[0.98] tracking-normal text-clinic-ink sm:mt-6 sm:text-7xl lg:text-[5.35rem] lg:leading-[0.9]">{homeData.heroTitle}</h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{homeData.heroSubtitle || `${doctor.doctorName || site.doctorName} offers detailed case-taking, gentle medicines, and structured follow-up for acute and chronic health concerns.`}</p>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{homeData.heroSubtitle || `Tell us your health concern, choose a preferred time, and get careful homoeopathic consultation from ${doctor.doctorName || site.doctorName}.`}</p>
             <div className="mt-7 grid gap-3 sm:mt-8 sm:flex sm:flex-wrap">
-              <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
+              <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book a Visit</Link>
               <a className="btn-secondary w-full px-6 py-3.5 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> Get Directions</a>
             </div>
             <div className="mt-7 grid overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/55 shadow-glass backdrop-blur-2xl sm:mt-8 sm:grid-cols-3">
@@ -148,10 +148,10 @@ export default function Home() {
       <section id="about" className="section-pad relative">
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
           <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-7">
-            <p className="eyebrow">About</p>
+            <p className="eyebrow">Meet Your Doctor</p>
             <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-clinic-ink sm:text-5xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
-            <p className="mt-5 text-base leading-8 text-slate-700">{doctor.about || `${doctor.doctorName || site.doctorName} offers personalised homoeopathic consultation with careful case-taking, gentle medicines, and structured follow-up care.`}</p>
-            <Link className="btn-secondary mt-6" to="/about-doctor">View full profile <ArrowRight size={17} /></Link>
+            <p className="mt-5 text-base leading-8 text-slate-700">{doctor.about || `${doctor.doctorName || site.doctorName} listens to your symptoms, understands your history, and guides you with gentle homoeopathic care and follow-up support.`}</p>
+            <Link className="btn-secondary mt-6" to="/about-doctor">Read Doctor Profile <ArrowRight size={17} /></Link>
           </motion.div>
           <motion.div {...fadeUp(0.08)} className="grid gap-4 sm:grid-cols-2">
             {[
@@ -172,7 +172,7 @@ export default function Home() {
       <section id="services" className="relative py-10 md:py-16">
         <div className="container-lux mb-8 h-px gold-hairline md:mb-10" />
         <div className="container-lux">
-          <SectionHeader eyebrow="Services" title="Premium patient care services" text="Clear guidance, careful listening, and structured support from first consultation to follow-up." />
+          <SectionHeader eyebrow="How We Help" title="Simple care, from first call to follow-up" text="You share your concern, the doctor understands your case, and the clinic helps you continue care clearly." />
         </div>
         <div className="container-lux grid auto-rows-fr gap-5 md:grid-cols-3">
           {homeData.featureCards.map((card, index) => {
@@ -190,13 +190,13 @@ export default function Home() {
 
       <section id="why-choose-us" className="section-pad relative">
         <div className="container-lux">
-          <SectionHeader eyebrow="Why Choose Us" title="Designed around trust, comfort, and continuity" text="A calm consultation experience with transparent guidance and personalised follow-up." />
+          <SectionHeader eyebrow="Why Patients Choose Us" title="Care that feels clear and comfortable" text="No confusing process. Just careful listening, simple guidance, and support after your consultation." />
           <div className="grid gap-4 md:grid-cols-3">
             {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
               <motion.article {...fadeUp(index * 0.06)} className="glass-card glass-card-hover p-5 sm:p-6" key={item}>
                 <CheckCircle2 className="text-clinic-gold" size={26} />
                 <h3 className="mt-4 font-display text-2xl font-bold text-clinic-ink">{item}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">A focused care experience built to keep patients informed and comfortable.</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Helpful support so you know what to do before, during, and after your visit.</p>
               </motion.article>
             ))}
           </div>
@@ -205,16 +205,16 @@ export default function Home() {
 
       <section id="treatments" className="section-pad relative bg-white/35">
         <div className="container-lux">
-          <SectionHeader eyebrow="Treatments" title={homeData.treatmentsTitle} text={homeData.treatmentsText} />
+          <SectionHeader eyebrow="Treatment Areas" title={homeData.treatmentsTitle} text={homeData.treatmentsText || 'Choose your health concern and open the card to understand how consultation can help.'} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
-          <Link className="btn-secondary mt-8" to="/treatments">View all treatments <ArrowRight size={17} /></Link>
+          <Link className="btn-secondary mt-8" to="/treatments">See All Health Concerns <ArrowRight size={17} /></Link>
         </div>
       </section>
 
       <section id="reviews" className="section-pad relative">
         <div className="absolute inset-x-0 top-0 h-px gold-hairline" />
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
-          <SectionHeader eyebrow="Patient reviews" title={homeData.reviewsTitle} text={homeData.reviewsText} />
+          <SectionHeader eyebrow="Patient Stories" title={homeData.reviewsTitle} text={homeData.reviewsText || 'Read what patients have shared about their consultation experience.'} />
           <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:gap-5 sm:px-0">
             {reviews.slice(0, 6).map((review, index) => (
               <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[260px] snap-start p-5 sm:min-w-[360px] sm:p-7" key={review.id || review.name}>
@@ -237,7 +237,7 @@ export default function Home() {
 
       <section id="gallery" className="section-pad relative bg-white/35">
         <div className="container-lux">
-          <SectionHeader eyebrow="Gallery" title="A calm, clean clinic experience" text="A quick look at clinic spaces and patient-facing moments." />
+          <SectionHeader eyebrow="Clinic Photos" title="See the clinic before you visit" text="A quick look at the clinic space so you know what to expect." />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {gallery.slice(0, 6).map((item, index) => (
               <motion.article {...fadeUp(index * 0.05)} className="glass-card overflow-hidden p-3" key={item.id || item.title || index}>
@@ -248,20 +248,20 @@ export default function Home() {
               </motion.article>
             ))}
           </div>
-          <Link className="btn-secondary mt-8" to="/gallery">Open full gallery <ArrowRight size={17} /></Link>
+          <Link className="btn-secondary mt-8" to="/gallery">View More Photos <ArrowRight size={17} /></Link>
         </div>
       </section>
 
       <section id="blog" className="section-pad relative">
         <div className="container-lux">
-          <SectionHeader eyebrow="Blog Preview" title={homeData.blogTitle} />
+          <SectionHeader eyebrow="Health Tips" title={homeData.blogTitle} text="Short, easy-to-read notes that help patients understand common health concerns." />
           <div className="grid gap-6 md:grid-cols-3">{posts.slice(0, 3).map((post) => <BlogCard key={post.id || post.slug || post.title} post={post} />)}</div>
         </div>
       </section>
 
       <section id="faq" className="section-pad relative bg-white/35">
         <div className="container-lux">
-          <SectionHeader eyebrow="FAQ" title="Common questions" text="Quick answers before booking or visiting the clinic." />
+          <SectionHeader eyebrow="Questions" title="Before you book" text="Simple answers for patients visiting or booking for the first time." />
           <div className="grid gap-4 md:grid-cols-2">
             {faqs.map(([question, answer], index) => (
               <motion.article {...fadeUp(index * 0.05)} className="glass-card p-5 sm:p-6" key={question}>
@@ -279,12 +279,12 @@ export default function Home() {
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">Contact</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">Need Help?</p>
               <h2 className="mt-3 font-display text-4xl font-bold leading-tight md:text-5xl">{homeData.contactTitle}</h2>
-              <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText}</p>
+              <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText || 'Call, WhatsApp, or book an appointment online. The clinic will guide you with the next step.'}</p>
             </div>
             <div className="grid gap-3 sm:flex sm:flex-wrap">
-              <Link className="btn-primary w-full sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
+              <Link className="btn-primary w-full sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book a Visit</Link>
               <a className="btn-secondary w-full bg-white/80 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> Call Clinic</a>
             </div>
           </div>

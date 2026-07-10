@@ -5,11 +5,11 @@ import { useClinic } from '../../context/ClinicContext.jsx';
 import { phoneHref } from '../../lib/contact.js';
 
 const links = [
-  ['About', 'about'],
-  ['Services', 'services'],
-  ['Reviews', 'reviews'],
+  ['Doctor', 'about'],
+  ['How We Help', 'services'],
+  ['Patient Stories', 'reviews'],
   ['Gallery', 'gallery'],
-  ['Blog', 'blog'],
+  ['Health Tips', 'blog'],
   ['Contact', 'contact']
 ];
 
