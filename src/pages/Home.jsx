@@ -76,7 +76,7 @@ export default function Home() {
         <div className="container-lux relative grid min-h-[auto] items-center gap-10 py-10 sm:py-14 lg:min-h-[760px] lg:grid-cols-[1.02fr_.98fr] lg:gap-12 lg:py-20">
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62 }}>
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-clinic-emerald shadow-glass backdrop-blur-2xl sm:px-4 sm:text-xs"><Award size={15} className="shrink-0 text-clinic-gold" /> <span className="truncate">{homeData.eyebrow}</span></div>
-            <h1 className="mt-5 max-w-3xl font-display text-4xl font-extrabold leading-[0.98] tracking-tight text-clinic-ink sm:mt-6 sm:text-6xl lg:text-[5.15rem] lg:leading-[0.92]">{homeData.heroTitle}</h1>
+            <h1 className="mt-5 max-w-3xl font-display text-[2.75rem] font-bold leading-[0.98] tracking-normal text-clinic-ink sm:mt-6 sm:text-7xl lg:text-[5.35rem] lg:leading-[0.9]">{homeData.heroTitle}</h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{homeData.heroSubtitle || `${doctor.doctorName || site.doctorName} offers detailed case-taking, gentle medicines, and structured follow-up for acute and chronic health concerns.`}</p>
             <div className="mt-7 grid gap-3 sm:mt-8 sm:flex sm:flex-wrap">
               <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book Appointment</Link>
@@ -127,7 +127,7 @@ export default function Home() {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-clinic-ink/30 via-transparent to-white/5" />
               </div>
               <div className="relative mt-3 rounded-[1.5rem] border border-white/70 bg-white/75 p-4 shadow-glass backdrop-blur-2xl sm:absolute sm:inset-x-6 sm:bottom-6 sm:mt-0">
-                <h2 className="font-display text-xl font-bold leading-tight sm:text-2xl">{doctor.doctorName || site.doctorName}</h2>
+                <h2 className="font-display text-2xl font-bold leading-tight sm:text-3xl">{doctor.doctorName || site.doctorName}</h2>
                 <p className="mt-1 text-sm font-semibold text-clinic-emerald">{doctor.qualification || site.qualification}</p>
                 <div className="mt-4 grid w-full grid-cols-2 gap-3">
                   <div className="rounded-2xl border border-white/70 bg-white/60 p-3"><strong className="block text-xl text-clinic-emerald">{doctor.experience || site.experience}</strong><span className="text-xs font-medium text-slate-500">Years</span></div>
@@ -147,7 +147,7 @@ export default function Home() {
             return (
               <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-5 sm:p-7" key={card.title}>
                 <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm"><Icon size={24} /></span>
-                <h3 className="mt-5 font-display text-xl font-bold sm:mt-7 sm:text-2xl">{card.title}</h3>
+                <h3 className="mt-5 font-display text-2xl font-bold leading-tight sm:mt-7 sm:text-3xl">{card.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{card.text}</p>
               </motion.div>
             );
@@ -200,7 +200,7 @@ export default function Home() {
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">Contact</p>
-              <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">{homeData.contactTitle}</h2>
+              <h2 className="mt-3 font-display text-4xl font-bold leading-tight md:text-5xl">{homeData.contactTitle}</h2>
               <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText}</p>
             </div>
             <div className="grid gap-3 sm:flex sm:flex-wrap">

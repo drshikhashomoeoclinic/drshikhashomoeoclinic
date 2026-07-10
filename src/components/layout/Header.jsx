@@ -22,12 +22,12 @@ export default function Header() {
         <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
           <span className="grid size-10 shrink-0 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-base font-bold text-white shadow-lg shadow-emerald-900/20 md:size-11 md:text-lg">S</span>
           <span className="min-w-0">
-            <strong className="block truncate font-display text-sm leading-none text-clinic-ink sm:text-lg">{site.clinicName}</strong>
-            <small className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
+            <strong className="block truncate font-display text-base font-bold leading-none text-clinic-ink sm:text-2xl">{site.clinicName}</strong>
+            <small className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
           </span>
         </Link>
         <nav className="hidden items-center gap-5 lg:flex">
-          {links.map(([label, href]) => <NavLink key={href} to={href} className={({ isActive }) => `relative py-2 text-sm font-semibold transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-clinic-gold after:transition ${isActive ? 'text-clinic-emerald after:scale-x-100' : 'text-slate-700 hover:text-clinic-emerald hover:after:scale-x-100'}`}>{label}</NavLink>)}
+          {links.map(([label, href]) => <NavLink key={href} to={href} className={({ isActive }) => `relative py-2 text-[15px] font-semibold transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-clinic-gold after:transition ${isActive ? 'text-clinic-emerald after:scale-x-100' : 'text-slate-700 hover:text-clinic-emerald hover:after:scale-x-100'}`}>{label}</NavLink>)}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
           <a href={phoneHref(site.phone)} className="btn-secondary px-4 py-2.5"><Phone size={17} /> Call</a>
