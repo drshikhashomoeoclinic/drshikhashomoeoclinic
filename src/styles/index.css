@@ -7,6 +7,7 @@
 @layer base {
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  section[id] { scroll-margin-top: 104px; }
   body {
     @apply bg-clinic-cream font-sans text-clinic-ink antialiased;
     margin: 0;

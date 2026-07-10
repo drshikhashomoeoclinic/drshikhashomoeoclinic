@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Award, CalendarDays, Clock, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, CheckCircle2, Clock, HelpCircle, Images, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogCard from '../components/cards/BlogCard.jsx';
@@ -49,7 +49,7 @@ function fadeUp(delay = 0) {
 }
 
 export default function Home() {
-  const { site, doctor, home, services, posts, reviews } = useClinic();
+  const { site, doctor, home, services, posts, reviews, gallery } = useClinic();
   const homeData = home;
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const highlights = Array.isArray(homeData.highlights)
@@ -61,6 +61,12 @@ export default function Home() {
     ['Clinic', site.location],
     ['Timing', site.hours],
     ['Contact', site.phone]
+  ];
+  const faqs = [
+    ['How do I book an appointment?', 'Use the Book Appointment button, call the clinic, or send a WhatsApp message.'],
+    ['Can I view treatments before booking?', 'Yes. The treatments section gives a quick overview, and each card opens a detailed page.'],
+    ['Where is the clinic located?', site.address || 'Hindmotor, Uttarpara'],
+    ['Are reviews and gallery updated from admin?', 'Yes. Public content is loaded dynamically from the existing Firestore collections.']
   ];
 
   useEffect(() => {
@@ -139,8 +145,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-features" className="relative py-10 md:py-16">
+      <section id="about" className="section-pad relative">
+        <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
+          <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-7">
+            <p className="eyebrow">About</p>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-clinic-ink sm:text-5xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
+            <p className="mt-5 text-base leading-8 text-slate-700">{doctor.about || `${doctor.doctorName || site.doctorName} offers personalised homoeopathic consultation with careful case-taking, gentle medicines, and structured follow-up care.`}</p>
+            <Link className="btn-secondary mt-6" to="/about-doctor">View full profile <ArrowRight size={17} /></Link>
+          </motion.div>
+          <motion.div {...fadeUp(0.08)} className="grid gap-4 sm:grid-cols-2">
+            {[
+              ['Doctor', doctor.doctorName || site.doctorName],
+              ['Qualification', doctor.qualification || site.qualification],
+              ['Experience', doctor.experience || site.experience],
+              ['Patients', doctor.patients || site.patients]
+            ].map(([label, value]) => (
+              <article className="glass-card p-5" key={label}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{label}</p>
+                <p className="mt-2 font-display text-2xl font-bold leading-tight text-clinic-ink">{value}</p>
+              </article>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <section id="services" className="relative py-10 md:py-16">
         <div className="container-lux mb-8 h-px gold-hairline md:mb-10" />
+        <div className="container-lux">
+          <SectionHeader eyebrow="Services" title="Premium patient care services" text="Clear guidance, careful listening, and structured support from first consultation to follow-up." />
+        </div>
         <div className="container-lux grid auto-rows-fr gap-5 md:grid-cols-3">
           {homeData.featureCards.map((card, index) => {
             const Icon = featureIcons[index] || ShieldCheck;
@@ -155,7 +188,22 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-treatments" className="section-pad relative bg-white/35">
+      <section id="why-choose-us" className="section-pad relative">
+        <div className="container-lux">
+          <SectionHeader eyebrow="Why Choose Us" title="Designed around trust, comfort, and continuity" text="A calm consultation experience with transparent guidance and personalised follow-up." />
+          <div className="grid gap-4 md:grid-cols-3">
+            {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
+              <motion.article {...fadeUp(index * 0.06)} className="glass-card glass-card-hover p-5 sm:p-6" key={item}>
+                <CheckCircle2 className="text-clinic-gold" size={26} />
+                <h3 className="mt-4 font-display text-2xl font-bold text-clinic-ink">{item}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">A focused care experience built to keep patients informed and comfortable.</p>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="treatments" className="section-pad relative bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Treatments" title={homeData.treatmentsTitle} text={homeData.treatmentsText} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
@@ -163,7 +211,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-reviews" className="section-pad relative">
+      <section id="reviews" className="section-pad relative">
         <div className="absolute inset-x-0 top-0 h-px gold-hairline" />
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
           <SectionHeader eyebrow="Patient reviews" title={homeData.reviewsTitle} text={homeData.reviewsText} />
@@ -187,14 +235,46 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-blog" className="section-pad relative bg-white/35">
+      <section id="gallery" className="section-pad relative bg-white/35">
         <div className="container-lux">
-          <SectionHeader eyebrow="Health notes" title={homeData.blogTitle} />
+          <SectionHeader eyebrow="Gallery" title="A calm, clean clinic experience" text="A quick look at clinic spaces and patient-facing moments." />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {gallery.slice(0, 6).map((item, index) => (
+              <motion.article {...fadeUp(index * 0.05)} className="glass-card overflow-hidden p-3" key={item.id || item.title || index}>
+                <div className="grid aspect-[4/3] place-items-center rounded-[1.25rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 bg-cover bg-center" style={item.image ? { backgroundImage: `url(${item.image})` } : undefined}>
+                  {!item.image && <Images className="text-clinic-emerald/45" size={34} />}
+                </div>
+                <h3 className="px-2 pb-2 pt-4 font-display text-2xl font-bold text-clinic-ink">{item.title || `Clinic photo ${index + 1}`}</h3>
+              </motion.article>
+            ))}
+          </div>
+          <Link className="btn-secondary mt-8" to="/gallery">Open full gallery <ArrowRight size={17} /></Link>
+        </div>
+      </section>
+
+      <section id="blog" className="section-pad relative">
+        <div className="container-lux">
+          <SectionHeader eyebrow="Blog Preview" title={homeData.blogTitle} />
           <div className="grid gap-6 md:grid-cols-3">{posts.slice(0, 3).map((post) => <BlogCard key={post.id || post.slug || post.title} post={post} />)}</div>
         </div>
       </section>
 
-      <section id="home-contact-cta" className="section-pad relative">
+      <section id="faq" className="section-pad relative bg-white/35">
+        <div className="container-lux">
+          <SectionHeader eyebrow="FAQ" title="Common questions" text="Quick answers before booking or visiting the clinic." />
+          <div className="grid gap-4 md:grid-cols-2">
+            {faqs.map(([question, answer], index) => (
+              <motion.article {...fadeUp(index * 0.05)} className="glass-card p-5 sm:p-6" key={question}>
+                <HelpCircle className="text-clinic-gold" size={25} />
+                <h3 className="mt-4 font-display text-2xl font-bold text-clinic-ink">{question}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{answer}</p>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="section-pad relative">
         <div className="container-lux premium-panel bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-10">
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
