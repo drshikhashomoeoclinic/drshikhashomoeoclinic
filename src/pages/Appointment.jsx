@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useSearchParams } from 'react-router-dom';
 import Breadcrumbs from '../components/seo/Breadcrumbs.jsx';
 import SEO from '../components/seo/SEO.jsx';
 import SectionHeader from '../components/ui/SectionHeader.jsx';
@@ -30,6 +31,18 @@ const timeSlots = [
   '7:00 PM - 9:00 PM'
 ];
 
+const commonConcerns = [
+  'PCOS / irregular periods',
+  'Thyroid symptoms',
+  'Hair fall / dandruff',
+  'Skin allergy / itching',
+  'Migraine / headache',
+  'Joint pain / arthritis',
+  'Sinus / allergy',
+  'Acidity / gastric issue',
+  'Piles symptoms'
+];
+
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -51,7 +64,9 @@ function validateForm(form) {
 
 export default function Appointment() {
   const { site } = useClinic();
-  const [form, setForm] = useState(initialForm);
+  const [searchParams] = useSearchParams();
+  const initialConcern = searchParams.get('concern') || '';
+  const [form, setForm] = useState(() => ({ ...initialForm, complaint: initialConcern }));
   const [status, setStatus] = useState('');
   const [statusType, setStatusType] = useState('success');
   const [lastSubmitAt, setLastSubmitAt] = useState(0);
@@ -61,6 +76,15 @@ export default function Appointment() {
   function updateField(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function selectConcern(concern) {
+    setForm((current) => ({
+      ...current,
+      complaint: current.complaint && current.complaint !== initialConcern
+        ? `${concern} - ${current.complaint}`
+        : concern
+    }));
   }
 
   async function handleSubmit(event) {
@@ -124,6 +148,22 @@ export default function Appointment() {
             <div className="mb-5 rounded-2xl bg-emerald-50 p-4 text-sm leading-6 text-clinic-emerald">
               Fill the details once. The clinic will call or WhatsApp you to confirm the final appointment time.
             </div>
+            <div className="mb-5 rounded-[1.5rem] border border-slate-100 bg-clinic-soft p-4">
+              <p className="text-sm font-bold text-clinic-ink">Choose your main health concern</p>
+              <p className="mt-1 text-xs font-medium text-slate-500">Tap one option to fill the complaint box faster. You can edit it anytime.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {commonConcerns.map((concern) => (
+                  <button
+                    className={`rounded-full border px-3 py-2 text-xs font-bold transition ${form.complaint.includes(concern) ? 'border-clinic-emerald bg-white text-clinic-emerald shadow-sm' : 'border-white bg-white/70 text-slate-600 hover:border-clinic-emerald hover:text-clinic-emerald'}`}
+                    key={concern}
+                    type="button"
+                    onClick={() => selectConcern(concern)}
+                  >
+                    {concern}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="font-semibold">Patient Full Name<input className="admin-input mt-2" name="name" value={form.name} onChange={updateField} required /><span className="mt-1 block text-xs font-medium text-slate-500">Write the name of the patient who needs consultation.</span></label>
               <label className="font-semibold">Mobile / WhatsApp Number<input className="admin-input mt-2" name="phone" value={form.phone} onChange={updateField} inputMode="tel" required /><span className="mt-1 block text-xs font-medium text-slate-500">Clinic will use this number to confirm your booking.</span></label>
@@ -138,6 +178,20 @@ export default function Appointment() {
             <label className="mt-4 block font-semibold">Additional Notes <span className="text-xs text-slate-400">(optional)</span><textarea className="admin-input mt-2 min-h-28" name="notes" value={form.notes} onChange={updateField} placeholder="Existing medicines, reports, pregnancy, allergies, or special request" /><span className="mt-1 block text-xs font-medium text-slate-500">Share anything the doctor should know before the visit.</span></label>
             <button className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-70" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Request Appointment'}</button>
             {status && <p className={`mt-4 rounded-2xl p-4 text-sm font-semibold ${statusType === 'success' ? 'bg-emerald-50 text-clinic-emerald' : 'bg-red-50 text-red-600'}`} role="status">{status}</p>}
+            {status && statusType === 'success' && (
+              <div className="mt-4 rounded-[1.5rem] border border-emerald-100 bg-white p-4 shadow-sm">
+                <p className="text-sm font-bold text-clinic-ink">What happens next?</p>
+                <div className="mt-3 grid gap-2 text-sm text-slate-600">
+                  <p>1. Clinic will review your request.</p>
+                  <p>2. You will receive confirmation by call or WhatsApp.</p>
+                  <p>3. Bring any old reports or prescriptions if available.</p>
+                </div>
+                <div className="mt-4 grid gap-2 sm:flex sm:flex-wrap">
+                  <a className="btn-secondary w-full px-4 py-2 sm:w-auto" href={whatsappHref(site.whatsapp, 'Hi, I submitted an appointment request on the website.')} target="_blank" rel="noreferrer">Message on WhatsApp</a>
+                  <a className="btn-secondary w-full px-4 py-2 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer">Get Directions</a>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </section>

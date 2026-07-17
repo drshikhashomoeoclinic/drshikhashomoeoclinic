@@ -11,6 +11,7 @@
   body {
     @apply bg-clinic-cream font-sans text-clinic-ink antialiased;
     margin: 0;
+    padding-bottom: 78px;
   }
   img { max-width: 100%; }
   input, textarea, select { @apply outline-none; }
@@ -31,4 +32,8 @@
   .eyebrow { @apply text-xs font-bold uppercase tracking-[0.22em] text-clinic-emerald; }
   .admin-input { @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-clinic-emerald; }
   .floating-bubble { @apply pointer-events-none absolute rounded-full border border-white/50 bg-white/25 shadow-glass backdrop-blur-xl; }
+}
+
+@media (min-width: 1024px) {
+  body { padding-bottom: 0; }
 }
