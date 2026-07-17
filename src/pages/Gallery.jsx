@@ -21,12 +21,12 @@ export default function Gallery() {
               {gallery.map((item, index) => (
                 <button
                   onClick={() => setActive(item)}
-                  className="group block w-full rounded-[2rem] border border-white/70 bg-white p-4 text-left shadow-glass transition hover:-translate-y-1 hover:shadow-luxury"
+                  className="group block w-full rounded-[1.5rem] border border-white/70 bg-white p-3 text-left shadow-glass transition hover:-translate-y-1 hover:shadow-luxury"
                   key={item.id || item.title || index}
                   type="button"
                   aria-label={`Open ${item.title || `clinic photo ${index + 1}`}`}
                 >
-                  <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-white via-clinic-cream to-emerald-50">
+                  <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[1.2rem] bg-gradient-to-br from-white via-clinic-cream to-emerald-50">
                     {item.image ? (
                       <img
                         className="h-full w-full object-contain p-2 transition duration-500 group-hover:scale-[1.02]"
@@ -36,10 +36,13 @@ export default function Gallery() {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <Images className="text-clinic-emerald/45" size={38} />
+                      <div className="text-center">
+                        <span className="mx-auto grid size-12 place-items-center rounded-full bg-white/70 text-clinic-emerald shadow-sm"><Images size={24} /></span>
+                        <span className="mt-3 block text-xs font-bold uppercase tracking-[0.16em] text-clinic-emerald/60">Photo</span>
+                      </div>
                     )}
                   </div>
-                  <strong className="mt-4 block font-display text-2xl text-clinic-ink">{item.title || `Clinic photo ${index + 1}`}</strong>
+                  <strong className="mt-3 block font-display text-xl text-clinic-ink">{item.title || `Clinic photo ${index + 1}`}</strong>
                 </button>
               ))}
             </div>

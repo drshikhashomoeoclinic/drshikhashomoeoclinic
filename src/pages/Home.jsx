@@ -91,16 +91,16 @@ export default function Home() {
       <section id="home-hero" className="relative overflow-hidden">
         <FloatingBubbles />
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/70 to-transparent" />
-        <div className="container-lux relative grid min-h-[auto] items-center gap-10 py-10 sm:py-14 lg:min-h-[760px] lg:grid-cols-[1.02fr_.98fr] lg:gap-12 lg:py-20">
+        <div className="container-lux relative grid min-h-[auto] items-center gap-8 py-8 sm:py-10 lg:min-h-[640px] lg:grid-cols-[1.02fr_.98fr] lg:gap-10 lg:py-14">
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62 }}>
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-clinic-emerald shadow-glass backdrop-blur-2xl sm:px-4 sm:text-xs"><Award size={15} className="shrink-0 text-clinic-gold" /> <span className="truncate">{homeData.eyebrow}</span></div>
-            <h1 className="mt-5 max-w-3xl font-display text-[2.75rem] font-bold leading-[0.98] tracking-normal text-clinic-ink sm:mt-6 sm:text-7xl lg:text-[5.35rem] lg:leading-[0.9]">{homeData.heroTitle}</h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">{homeData.heroSubtitle || `Tell us your health concern, choose a preferred time, and get careful homoeopathic consultation from ${doctor.doctorName || site.doctorName}.`}</p>
-            <div className="mt-7 grid gap-3 sm:mt-8 sm:flex sm:flex-wrap">
+            <h1 className="mt-4 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.02] tracking-normal text-clinic-ink sm:mt-5 sm:text-6xl lg:text-[4.35rem] lg:leading-[0.96]">{homeData.heroTitle}</h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-5 sm:text-[17px] sm:leading-8">{homeData.heroSubtitle || `Tell us your health concern, choose a preferred time, and get careful homoeopathic consultation from ${doctor.doctorName || site.doctorName}.`}</p>
+            <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
               <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> Book a Visit</Link>
               <a className="btn-secondary w-full px-6 py-3.5 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> Get Directions</a>
             </div>
-            <div className="mt-7 grid overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/55 shadow-glass backdrop-blur-2xl sm:mt-8 sm:grid-cols-3">
+            <div className="mt-6 grid overflow-hidden rounded-[1.25rem] border border-white/70 bg-white/55 shadow-glass backdrop-blur-2xl sm:mt-7 sm:grid-cols-3">
               {heroStats.map(([label, value]) => (
                 <div className="border-b border-white/55 p-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0" key={label}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{label}</p>
@@ -108,7 +108,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="mt-7 grid gap-3 sm:mt-9 sm:grid-cols-3">
+            <div className="mt-6 grid gap-3 sm:mt-7 sm:grid-cols-3">
               {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
                 <motion.div {...fadeUp(index * 0.06)} className="glass rounded-[1.25rem] px-4 py-4 text-sm font-semibold text-slate-700 ring-1 ring-white/35" key={item}>{item}</motion.div>
               ))}
@@ -127,18 +127,18 @@ export default function Home() {
             <div className="absolute -left-4 top-28 z-10 hidden rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-sm font-bold text-clinic-emerald shadow-glass backdrop-blur-2xl md:block">BHMS Consultant</div>
             <div className="absolute -right-2 bottom-40 z-10 hidden rounded-2xl border border-white/70 bg-white/70 px-4 py-3 text-sm font-bold text-clinic-ink shadow-glass backdrop-blur-2xl md:block">Personalised care</div>
             <div className="premium-panel relative mx-auto max-w-[540px] p-3">
-              <div className="relative min-h-[340px] overflow-hidden rounded-[1.55rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 sm:min-h-[440px] md:min-h-[540px]">
+              <div className="relative min-h-[300px] overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-white/80 via-clinic-cream to-emerald-50 sm:min-h-[380px] md:min-h-[460px]">
                 {shouldShowHeroImage ? (
                   <img
                     src={homeData.heroImage}
                     alt="Hero"
-                    className="block h-full min-h-[340px] w-full object-cover object-center sm:min-h-[440px] md:min-h-[540px]"
+                    className="block h-full min-h-[300px] w-full object-cover object-center sm:min-h-[380px] md:min-h-[460px]"
                     loading="eager"
                     referrerPolicy="no-referrer"
                     onError={() => setHeroImageFailed(true)}
                   />
                 ) : (
-                  <div className="grid min-h-[340px] place-items-center p-8 text-center sm:min-h-[440px] md:min-h-[540px]">
+                  <div className="grid min-h-[300px] place-items-center p-8 text-center sm:min-h-[380px] md:min-h-[460px]">
                     <Stethoscope className="mx-auto text-clinic-emerald" size={68} />
                   </div>
                 )}
@@ -159,9 +159,9 @@ export default function Home() {
 
       <section id="about" className="section-pad relative scroll-mt-28">
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
-          <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-7">
+          <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-6">
             <p className="eyebrow">Meet Your Doctor</p>
-            <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-clinic-ink sm:text-5xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
+            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-clinic-ink sm:text-4xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
             <p className="mt-5 text-base leading-8 text-slate-700">{doctor.about || `${doctor.doctorName || site.doctorName} listens to your symptoms, understands your history, and guides you with gentle homoeopathic care and follow-up support.`}</p>
             <Link className="btn-secondary mt-6" to="/about-doctor">Read Doctor Profile <ArrowRight size={17} /></Link>
           </motion.div>
@@ -181,8 +181,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="services" className="relative scroll-mt-28 py-10 md:py-16">
-        <div className="container-lux mb-8 h-px gold-hairline md:mb-10" />
+      <section id="services" className="relative scroll-mt-28 py-8 md:py-12">
+        <div className="container-lux mb-6 h-px gold-hairline md:mb-8" />
         <div className="container-lux">
           <SectionHeader eyebrow="How We Help" title="Simple care, from first call to follow-up" text="You share your concern, the doctor understands your case, and the clinic helps you continue care clearly." />
         </div>
@@ -190,9 +190,9 @@ export default function Home() {
           {homeData.featureCards.map((card, index) => {
             const Icon = featureIcons[index] || ShieldCheck;
             return (
-              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -8, scale: 1.01 }} className="glass-card glass-card-hover h-full p-5 sm:p-7" key={card.title}>
-                <span className="grid size-12 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm"><Icon size={24} /></span>
-                <h3 className="mt-5 font-display text-2xl font-bold leading-tight sm:mt-7 sm:text-3xl">{card.title}</h3>
+              <motion.div {...fadeUp(index * 0.08)} whileHover={{ y: -6, scale: 1.01 }} className="glass-card glass-card-hover h-full p-5" key={card.title}>
+                <span className="grid size-10 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm"><Icon size={21} /></span>
+                <h3 className="mt-4 font-display text-2xl font-bold leading-tight">{card.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{card.text}</p>
               </motion.div>
             );
@@ -207,7 +207,7 @@ export default function Home() {
             {(highlights.length ? highlights : ['Personalised care', 'Online consults', 'Follow-up support']).map((item, index) => (
               <motion.article {...fadeUp(index * 0.06)} className="glass-card glass-card-hover p-5 sm:p-6" key={item}>
                 <CheckCircle2 className="text-clinic-gold" size={26} />
-                <h3 className="mt-4 font-display text-2xl font-bold text-clinic-ink">{item}</h3>
+                <h3 className="mt-3 font-display text-xl font-bold text-clinic-ink">{item}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">Helpful support so you know what to do before, during, and after your visit.</p>
               </motion.article>
             ))}
@@ -225,15 +225,15 @@ export default function Home() {
 
       <section id="campaign" className="section-pad relative scroll-mt-28">
         <div className="container-lux">
-          <motion.div {...fadeUp()} className="premium-panel overflow-hidden bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-8">
+          <motion.div {...fadeUp()} className="premium-panel overflow-hidden bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6">
             <div className="absolute -right-20 -top-24 size-72 rounded-full border border-clinic-gold/20 bg-clinic-gold/15 blur-sm" />
             <div className="absolute -bottom-24 left-10 size-64 rounded-full border border-white/10 bg-white/5 blur-sm" />
-            <div className="relative grid gap-7 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
+            <div className="relative grid gap-6 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
               <div>
                 <p className="inline-flex items-center gap-2 rounded-full border border-clinic-gold/30 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold backdrop-blur-xl">
                   <Gift size={15} /> {homeData.campaignBadge || 'Patient Care Campaign'}
                 </p>
-                <h2 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-tight md:text-6xl">{homeData.campaignTitle || 'Book a personalised homoeopathic consultation'}</h2>
+                <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold leading-tight md:text-5xl">{homeData.campaignTitle || 'Book a personalised homoeopathic consultation'}</h2>
                 <p className="mt-4 max-w-2xl text-base leading-8 text-white/75">{homeData.campaignText || 'Share your main health concern and the clinic will guide you with appointment confirmation and follow-up support.'}</p>
                 <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
                   {campaignCta}
@@ -241,9 +241,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-3 shadow-glass backdrop-blur-xl">
-                <div className="grid min-h-[260px] place-items-center overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-white/10 via-clinic-gold/10 to-emerald-400/10 md:min-h-[340px]">
+                <div className="grid min-h-[220px] place-items-center overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-white/10 via-clinic-gold/10 to-emerald-400/10 md:min-h-[280px]">
                   {homeData.campaignImage ? (
-                    <img className="h-full min-h-[260px] w-full object-cover md:min-h-[340px]" src={homeData.campaignImage} alt={homeData.campaignTitle || 'Clinic campaign'} loading="lazy" referrerPolicy="no-referrer" />
+                    <img className="h-full min-h-[220px] w-full object-cover md:min-h-[280px]" src={homeData.campaignImage} alt={homeData.campaignTitle || 'Clinic campaign'} loading="lazy" referrerPolicy="no-referrer" />
                   ) : (
                     <div className="p-8 text-center">
                       <Stethoscope className="mx-auto text-clinic-gold" size={58} />
@@ -264,7 +264,7 @@ export default function Home() {
           <SectionHeader eyebrow="Patient Stories" title={homeData.reviewsTitle} text={homeData.reviewsText || 'Read what patients have shared about their consultation experience.'} />
           <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:gap-5 sm:px-0">
             {reviews.slice(0, 6).map((review, index) => (
-              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -6 }} className="glass-card min-w-[260px] snap-start p-5 sm:min-w-[360px] sm:p-7" key={review.id || review.name}>
+              <motion.article {...fadeUp(index * 0.06)} whileHover={{ y: -5 }} className="glass-card min-w-[250px] snap-start p-5 sm:min-w-[320px]" key={review.id || review.name}>
                 <div className="flex items-center justify-between gap-4">
                   {review.image ? (
                     <img className="size-12 rounded-full object-cover" src={review.image} alt={review.name || 'Patient'} loading="lazy" referrerPolicy="no-referrer" />
@@ -311,7 +311,7 @@ export default function Home() {
           <SectionHeader eyebrow="Questions" title="Before you book" text="Simple answers for patients visiting or booking for the first time." />
           <div className="grid gap-4 md:grid-cols-2">
             {faqs.map(([question, answer], index) => (
-              <motion.article {...fadeUp(index * 0.05)} className="glass-card p-5 sm:p-6" key={question}>
+              <motion.article {...fadeUp(index * 0.05)} className="glass-card p-5" key={question}>
                 <HelpCircle className="text-clinic-gold" size={25} />
                 <h3 className="mt-4 font-display text-2xl font-bold text-clinic-ink">{question}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{answer}</p>
@@ -322,12 +322,12 @@ export default function Home() {
       </section>
 
       <section id="contact" className="section-pad relative scroll-mt-28">
-        <div className="container-lux premium-panel bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-10">
+        <div className="container-lux premium-panel bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-8">
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">Need Help?</p>
-              <h2 className="mt-3 font-display text-4xl font-bold leading-tight md:text-5xl">{homeData.contactTitle}</h2>
+              <h2 className="mt-3 font-display text-3xl font-bold leading-tight md:text-4xl">{homeData.contactTitle}</h2>
               <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText || 'Call, WhatsApp, or book an appointment online. The clinic will guide you with the next step.'}</p>
             </div>
             <div className="grid gap-3 sm:flex sm:flex-wrap">

@@ -43,9 +43,9 @@ function ServiceMedia({ service }) {
 
   if (image && !imageFailed) {
     return (
-      <span className="grid size-[72px] place-items-center overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-sm">
+      <span className="grid size-14 place-items-center overflow-hidden rounded-2xl border border-white/70 bg-white/65 shadow-sm">
         <img
-          className="h-[72px] w-[72px] rounded-2xl object-cover"
+          className="size-14 rounded-2xl object-cover"
           src={image}
           alt={service.title || 'Treatment'}
           loading="lazy"
@@ -57,21 +57,21 @@ function ServiceMedia({ service }) {
   }
 
   return (
-    <span className="grid size-[72px] place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm">
-      <Icon size={32} />
+    <span className="grid size-14 place-items-center rounded-2xl border border-white/70 bg-white/65 text-clinic-emerald shadow-sm">
+      <Icon size={26} />
     </span>
   );
 }
 
 export default function TreatmentCard({ service }) {
   return (
-    <motion.article whileHover={{ y: -9, scale: 1.012 }} className="group glass-card glass-card-hover h-full p-5 sm:p-7">
+    <motion.article whileHover={{ y: -6, scale: 1.01 }} className="group glass-card glass-card-hover h-full p-5">
       <ServiceMedia service={service} />
-      <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-clinic-gold">{service.category}</p>
-      <h3 className="mt-3 font-display text-xl font-bold leading-tight text-clinic-ink sm:text-2xl">{service.title}</h3>
-      <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
-      <Link to={`/treatments/${service.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-clinic-emerald">
-        View treatment <ArrowUpRight size={18} className="transition group-hover:translate-x-1" />
+      <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{service.category}</p>
+      <h3 className="mt-2 font-display text-xl font-bold leading-tight text-clinic-ink">{service.title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{service.description}</p>
+      <Link to={`/treatments/${service.slug}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-clinic-emerald">
+        View treatment <ArrowUpRight size={16} className="transition group-hover:translate-x-1" />
       </Link>
     </motion.article>
   );

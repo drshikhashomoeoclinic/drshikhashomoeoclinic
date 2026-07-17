@@ -15,7 +15,7 @@ const links = [
 
 function getHeaderOffset() {
   const header = document.querySelector('header');
-  return (header?.offsetHeight || 88) + 16;
+  return (header?.offsetHeight || 76) + 10;
 }
 
 function scrollToSection(id, options = {}) {
@@ -81,32 +81,32 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 py-3">
-      <div className="container-lux flex h-16 items-center justify-between gap-3 rounded-full border border-white/65 bg-white/62 px-3 shadow-glass backdrop-blur-2xl md:gap-4 md:px-5">
-        <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid size-10 shrink-0 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-base font-bold text-white shadow-lg shadow-emerald-900/20 md:size-11 md:text-lg">S</span>
+    <header className="sticky top-0 z-50 py-2">
+      <div className="container-lux flex h-14 items-center justify-between gap-3 rounded-full border border-white/65 bg-white/68 px-3 shadow-glass backdrop-blur-2xl md:gap-4 md:px-4">
+        <Link to="/" className="flex min-w-0 items-center gap-2.5" onClick={() => setOpen(false)}>
+          <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-base font-bold text-white shadow-lg shadow-emerald-900/20 md:size-10 md:text-lg">S</span>
           <span className="min-w-0">
-            <strong className="block truncate font-display text-base font-bold leading-none text-clinic-ink sm:text-2xl">{site.clinicName}</strong>
-            <small className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
+            <strong className="block truncate font-display text-base font-bold leading-none text-clinic-ink sm:text-xl">{site.clinicName}</strong>
+            <small className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
           </span>
         </Link>
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-4 lg:flex">
           {links.map(([label, id]) => (
             <a
               key={id}
               href={`/#${id}`}
               onClick={(event) => handleSectionClick(event, id)}
-              className={`relative py-2 text-[15px] font-semibold transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-clinic-gold after:transition ${active === id ? 'text-clinic-emerald after:scale-x-100' : 'text-slate-700 after:scale-x-0 hover:text-clinic-emerald hover:after:scale-x-100'}`}
+              className={`relative py-2 text-sm font-semibold transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-clinic-gold after:transition ${active === id ? 'text-clinic-emerald after:scale-x-100' : 'text-slate-700 after:scale-x-0 hover:text-clinic-emerald hover:after:scale-x-100'}`}
             >
               {label}
             </a>
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={phoneHref(site.phone)} className="btn-secondary px-4 py-2.5"><Phone size={17} /> Call</a>
-          <Link to="/book-appointment" className="btn-primary px-5 py-2.5"><CalendarDays size={17} /> Book</Link>
+          <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> Call</a>
+          <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> Book</Link>
         </div>
-        <button className="rounded-full border border-white/70 bg-white/60 p-2.5 shadow-sm backdrop-blur-xl lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
+        <button className="rounded-full border border-white/70 bg-white/60 p-2 shadow-sm backdrop-blur-xl lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
           {open ? <X /> : <Menu />}
         </button>
       </div>
