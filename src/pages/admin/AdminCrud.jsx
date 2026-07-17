@@ -83,6 +83,7 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
   }
 
   async function handleDelete(id) {
+    if (!window.confirm('Delete this item permanently? This cannot be undone.')) return;
     await removeDocument(collectionName, id);
     refresh();
   }

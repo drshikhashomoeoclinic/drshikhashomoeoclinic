@@ -1,12 +1,45 @@
-import * as Icons from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+  Activity,
+  ArrowUpRight,
+  Baby,
+  Bone,
+  Brain,
+  Droplets,
+  FlaskConical,
+  HeartPulse,
+  Leaf,
+  Pill,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  UserRound,
+  Wind
+} from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+const iconMap = {
+  Activity,
+  Baby,
+  Bone,
+  Brain,
+  Droplets,
+  FlaskConical,
+  HeartPulse,
+  Leaf,
+  Pill,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  UserRound,
+  Wind
+};
 
 function ServiceMedia({ service }) {
   const [imageFailed, setImageFailed] = useState(false);
   const image = typeof service.image === 'string' ? service.image.trim() : '';
-  const Icon = Icons[service.icon] || Icons.Stethoscope;
+  const Icon = iconMap[service.icon] || Stethoscope;
 
   if (image && !imageFailed) {
     return (
@@ -38,7 +71,7 @@ export default function TreatmentCard({ service }) {
       <h3 className="mt-3 font-display text-xl font-bold leading-tight text-clinic-ink sm:text-2xl">{service.title}</h3>
       <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
       <Link to={`/treatments/${service.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-clinic-emerald">
-        View treatment <Icons.ArrowUpRight size={18} className="transition group-hover:translate-x-1" />
+        View treatment <ArrowUpRight size={18} className="transition group-hover:translate-x-1" />
       </Link>
     </motion.article>
   );

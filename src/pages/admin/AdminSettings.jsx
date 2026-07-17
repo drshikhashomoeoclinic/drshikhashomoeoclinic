@@ -80,7 +80,7 @@ const homepageSections = [
   {
     id: 'features',
     title: 'Features Section',
-    liveHash: 'home-features',
+    liveHash: 'services',
     placeholder: 'Three feature cards',
     description: 'These cards explain why patients should choose the clinic.',
     fields: [
@@ -95,7 +95,7 @@ const homepageSections = [
   {
     id: 'treatments',
     title: 'Treatments Section',
-    liveHash: 'home-treatments',
+    liveHash: 'treatments',
     placeholder: 'Treatment list header',
     description: 'This heading sits above the treatment cards on the homepage.',
     fields: [
@@ -106,7 +106,7 @@ const homepageSections = [
   {
     id: 'reviews',
     title: 'Reviews Section',
-    liveHash: 'home-reviews',
+    liveHash: 'reviews',
     placeholder: 'Patient review intro',
     description: 'This introduces patient feedback on the homepage.',
     fields: [
@@ -117,7 +117,7 @@ const homepageSections = [
   {
     id: 'blog',
     title: 'Blog Section',
-    liveHash: 'home-blog',
+    liveHash: 'blog',
     placeholder: 'Health notes heading',
     description: 'This title appears above the latest health notes on the homepage.',
     fields: [
@@ -127,7 +127,7 @@ const homepageSections = [
   {
     id: 'contact',
     title: 'Contact CTA',
-    liveHash: 'home-contact-cta',
+    liveHash: 'contact',
     placeholder: 'Booking call-to-action',
     description: 'This call-to-action encourages patients to book or contact the clinic.',
     fields: [

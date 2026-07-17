@@ -172,6 +172,7 @@ export default function AdminAppointments() {
   }
 
   async function deleteAppointment(id) {
+    if (!window.confirm('Delete this appointment permanently? This cannot be undone.')) return;
     await removeDocument('appointments', id);
     setAppointments((items) => items.filter((item) => item.id !== id));
     if (editing?.id === id) setEditing(null);

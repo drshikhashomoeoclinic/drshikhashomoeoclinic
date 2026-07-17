@@ -170,6 +170,7 @@ export default function AdminPatients() {
   }
 
   async function deletePatient(id) {
+    if (!window.confirm('Delete this patient permanently? This cannot be undone.')) return;
     await removeDocument('patients', id);
     setPatients((items) => items.filter((item) => item.id !== id));
     if (editing?.id === id) {
