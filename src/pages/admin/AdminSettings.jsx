@@ -16,7 +16,9 @@ const fieldSets = {
     'eyebrow', 'heroTitle', 'heroSubtitle:textarea', 'heroImage',
     'highlights:textarea', 'feature1Title', 'feature1Text:textarea',
     'feature2Title', 'feature2Text:textarea', 'feature3Title', 'feature3Text:textarea',
-    'treatmentsTitle', 'treatmentsText:textarea', 'reviewsTitle', 'reviewsText:textarea',
+    'treatmentsTitle', 'treatmentsText:textarea',
+    'campaignBadge', 'campaignTitle', 'campaignText:textarea', 'campaignButtonLabel', 'campaignButtonUrl', 'campaignImage',
+    'reviewsTitle', 'reviewsText:textarea',
     'blogTitle', 'contactTitle', 'contactText:textarea'
   ],
   'seo/settings': [
@@ -104,6 +106,21 @@ const homepageSections = [
     ]
   },
   {
+    id: 'campaign',
+    title: 'Campaign Section',
+    liveHash: 'campaign',
+    placeholder: 'Offer or awareness campaign',
+    description: 'Use this for appointment campaigns, seasonal awareness, or special patient guidance.',
+    fields: [
+      ['campaignBadge', 'Small Campaign Label', 'Appears as the small label above the campaign heading.'],
+      ['campaignTitle', 'Campaign Heading', 'Appears as the main campaign message on the homepage.'],
+      ['campaignText:textarea', 'Campaign Description', 'Explains the campaign or appointment offer in simple patient language.'],
+      ['campaignButtonLabel', 'Button Text', 'Appears on the campaign call-to-action button.'],
+      ['campaignButtonUrl', 'Button Link', 'Use /book-appointment for appointment page, or paste a full external link.'],
+      ['campaignImage', 'Campaign Image URL', 'Optional image shown on the right side of the campaign section.']
+    ]
+  },
+  {
     id: 'reviews',
     title: 'Reviews Section',
     liveHash: 'reviews',
@@ -158,6 +175,8 @@ function validateHomepage(draft) {
   if (!normalizeValue(draft.heroSubtitle)) errors.heroSubtitle = 'Short Description is required.';
   if (!normalizeValue(draft.highlights)) errors.highlights = 'Add at least one highlight point.';
   if (!normalizeValue(draft.treatmentsTitle)) errors.treatmentsTitle = 'Treatments heading is required.';
+  if (!normalizeValue(draft.campaignTitle)) errors.campaignTitle = 'Campaign heading is required.';
+  if (!normalizeValue(draft.campaignText)) errors.campaignText = 'Campaign description is required.';
   if (!normalizeValue(draft.reviewsTitle)) errors.reviewsTitle = 'Reviews heading is required.';
   if (!normalizeValue(draft.blogTitle)) errors.blogTitle = 'Blog heading is required.';
   if (!normalizeValue(draft.contactTitle)) errors.contactTitle = 'Contact CTA heading is required.';
@@ -326,6 +345,14 @@ export default function AdminSettings({ collectionName, documentId, title }) {
                         <div className="grid gap-3 sm:grid-cols-3">{[1, 2, 3].map((index) => <div className="rounded-2xl border border-slate-100 p-3" key={index}><strong className="text-sm">{previewData[`feature${index}Title`] || `Feature ${index}`}</strong><p className="mt-2 text-xs leading-5 text-slate-500">{previewData[`feature${index}Text`] || 'Feature description appears here.'}</p></div>)}</div>
                       )}
                       {section.id === 'treatments' && <PreviewHeader title={previewData.treatmentsTitle} text={previewData.treatmentsText} fallback="Conditions We Treat" />}
+                      {section.id === 'campaign' && (
+                        <div className="rounded-2xl bg-clinic-ink p-4 text-white">
+                          <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">{previewData.campaignBadge || 'Campaign label'}</p>
+                          <h3 className="mt-3 font-display text-3xl font-bold">{previewData.campaignTitle || 'Campaign heading'}</h3>
+                          <p className="mt-2 text-sm leading-6 text-white/70">{previewData.campaignText || 'Campaign description appears here.'}</p>
+                          <span className="mt-4 inline-flex rounded-full bg-clinic-gold px-4 py-2 text-xs font-bold text-clinic-ink">{previewData.campaignButtonLabel || 'Button text'}</span>
+                        </div>
+                      )}
                       {section.id === 'reviews' && <PreviewHeader title={previewData.reviewsTitle} text={previewData.reviewsText} fallback="Patient experiences" />}
                       {section.id === 'blog' && <PreviewHeader title={previewData.blogTitle} fallback="Latest from the clinic" />}
                       {section.id === 'contact' && <PreviewHeader title={previewData.contactTitle} text={previewData.contactText} fallback="Visit or reach us" />}

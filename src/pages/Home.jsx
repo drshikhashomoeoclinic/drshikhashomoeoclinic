@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Award, CalendarDays, CheckCircle2, Clock, HelpCircle, Images, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, CheckCircle2, Clock, Gift, HelpCircle, Images, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogCard from '../components/cards/BlogCard.jsx';
@@ -72,6 +72,18 @@ export default function Home() {
   useEffect(() => {
     setHeroImageFailed(false);
   }, [homeData.heroImage]);
+
+  const campaignUrl = homeData.campaignButtonUrl || '/book-appointment';
+  const campaignButton = (
+    <span className="btn-primary w-full px-6 py-3.5 sm:w-auto">
+      <CalendarDays size={19} /> {homeData.campaignButtonLabel || 'Book Appointment'}
+    </span>
+  );
+  const campaignCta = campaignUrl.startsWith('http') ? (
+    <a href={campaignUrl} target="_blank" rel="noreferrer">{campaignButton}</a>
+  ) : (
+    <Link to={campaignUrl}>{campaignButton}</Link>
+  );
 
   return (
     <main className="lux-bg overflow-hidden">
@@ -208,6 +220,41 @@ export default function Home() {
           <SectionHeader eyebrow="Treatment Areas" title={homeData.treatmentsTitle} text={homeData.treatmentsText || 'Choose your health concern and open the card to understand how consultation can help.'} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
           <Link className="btn-secondary mt-8" to="/treatments">See All Health Concerns <ArrowRight size={17} /></Link>
+        </div>
+      </section>
+
+      <section id="campaign" className="section-pad relative scroll-mt-28">
+        <div className="container-lux">
+          <motion.div {...fadeUp()} className="premium-panel overflow-hidden bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-8">
+            <div className="absolute -right-20 -top-24 size-72 rounded-full border border-clinic-gold/20 bg-clinic-gold/15 blur-sm" />
+            <div className="absolute -bottom-24 left-10 size-64 rounded-full border border-white/10 bg-white/5 blur-sm" />
+            <div className="relative grid gap-7 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
+              <div>
+                <p className="inline-flex items-center gap-2 rounded-full border border-clinic-gold/30 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold backdrop-blur-xl">
+                  <Gift size={15} /> {homeData.campaignBadge || 'Patient Care Campaign'}
+                </p>
+                <h2 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-tight md:text-6xl">{homeData.campaignTitle || 'Book a personalised homoeopathic consultation'}</h2>
+                <p className="mt-4 max-w-2xl text-base leading-8 text-white/75">{homeData.campaignText || 'Share your main health concern and the clinic will guide you with appointment confirmation and follow-up support.'}</p>
+                <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
+                  {campaignCta}
+                  <a className="btn-secondary w-full bg-white/85 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> Call Clinic</a>
+                </div>
+              </div>
+              <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-3 shadow-glass backdrop-blur-xl">
+                <div className="grid min-h-[260px] place-items-center overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-white/10 via-clinic-gold/10 to-emerald-400/10 md:min-h-[340px]">
+                  {homeData.campaignImage ? (
+                    <img className="h-full min-h-[260px] w-full object-cover md:min-h-[340px]" src={homeData.campaignImage} alt={homeData.campaignTitle || 'Clinic campaign'} loading="lazy" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="p-8 text-center">
+                      <Stethoscope className="mx-auto text-clinic-gold" size={58} />
+                      <p className="mt-4 font-display text-3xl font-bold">Patient-first care</p>
+                      <p className="mt-2 text-sm leading-6 text-white/60">Campaign image can be added from admin.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
