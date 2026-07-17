@@ -145,7 +145,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="section-pad relative">
+      <section id="about" className="section-pad relative scroll-mt-28">
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
           <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-7">
             <p className="eyebrow">Meet Your Doctor</p>
@@ -169,7 +169,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="services" className="relative py-10 md:py-16">
+      <section id="services" className="relative scroll-mt-28 py-10 md:py-16">
         <div className="container-lux mb-8 h-px gold-hairline md:mb-10" />
         <div className="container-lux">
           <SectionHeader eyebrow="How We Help" title="Simple care, from first call to follow-up" text="You share your concern, the doctor understands your case, and the clinic helps you continue care clearly." />
@@ -188,7 +188,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="why-choose-us" className="section-pad relative">
+      <section id="why-choose-us" className="section-pad relative scroll-mt-28">
         <div className="container-lux">
           <SectionHeader eyebrow="Why Patients Choose Us" title="Care that feels clear and comfortable" text="No confusing process. Just careful listening, simple guidance, and support after your consultation." />
           <div className="grid gap-4 md:grid-cols-3">
@@ -203,7 +203,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="treatments" className="section-pad relative bg-white/35">
+      <section id="treatments" className="section-pad relative scroll-mt-28 bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Treatment Areas" title={homeData.treatmentsTitle} text={homeData.treatmentsText || 'Choose your health concern and open the card to understand how consultation can help.'} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
@@ -211,7 +211,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="reviews" className="section-pad relative">
+      <section id="reviews" className="section-pad relative scroll-mt-28">
         <div className="absolute inset-x-0 top-0 h-px gold-hairline" />
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
           <SectionHeader eyebrow="Patient Stories" title={homeData.reviewsTitle} text={homeData.reviewsText || 'Read what patients have shared about their consultation experience.'} />
@@ -235,7 +235,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="gallery" className="section-pad relative bg-white/35">
+      <section id="gallery" className="section-pad relative scroll-mt-28 bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Clinic Photos" title="See the clinic before you visit" text="A quick look at the clinic space so you know what to expect." />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -252,14 +252,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="blog" className="section-pad relative">
+      <section id="blog" className="section-pad relative scroll-mt-28">
         <div className="container-lux">
           <SectionHeader eyebrow="Health Tips" title={homeData.blogTitle} text="Short, easy-to-read notes that help patients understand common health concerns." />
           <div className="grid gap-6 md:grid-cols-3">{posts.slice(0, 3).map((post) => <BlogCard key={post.id || post.slug || post.title} post={post} />)}</div>
         </div>
       </section>
 
-      <section id="faq" className="section-pad relative bg-white/35">
+      <section id="faq" className="section-pad relative scroll-mt-28 bg-white/35">
         <div className="container-lux">
           <SectionHeader eyebrow="Questions" title="Before you book" text="Simple answers for patients visiting or booking for the first time." />
           <div className="grid gap-4 md:grid-cols-2">
@@ -274,7 +274,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="section-pad relative">
+      <section id="contact" className="section-pad relative scroll-mt-28">
         <div className="container-lux premium-panel bg-clinic-ink/95 p-5 text-white shadow-luxury sm:p-6 md:p-10">
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">

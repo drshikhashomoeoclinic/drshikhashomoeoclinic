@@ -13,12 +13,28 @@ const links = [
   ['Contact', 'contact']
 ];
 
-function scrollToSection(id) {
+function getHeaderOffset() {
+  const header = document.querySelector('header');
+  return (header?.offsetHeight || 88) + 16;
+}
+
+function scrollToSection(id, options = {}) {
   const element = document.getElementById(id);
   if (!element) return false;
-  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  window.history.replaceState(null, '', `#${id}`);
+  const top = element.getBoundingClientRect().top + window.scrollY - getHeaderOffset();
+  window.scrollTo({ top: Math.max(top, 0), behavior: options.behavior || 'smooth' });
+  if (options.updateHash !== false) window.history.replaceState(null, '', `#${id}`);
   return true;
+}
+
+function scrollToSectionWhenReady(id, options = {}) {
+  let attempts = 0;
+  const tryScroll = () => {
+    if (scrollToSection(id, options)) return;
+    attempts += 1;
+    if (attempts < 12) window.setTimeout(tryScroll, 80);
+  };
+  tryScroll();
 }
 
 export default function Header() {
@@ -48,8 +64,9 @@ export default function Header() {
 
   useEffect(() => {
     if (location.pathname !== '/' || !location.hash) return;
-    const id = location.hash.replace('#', '');
-    window.requestAnimationFrame(() => scrollToSection(id));
+    const id = decodeURIComponent(location.hash.replace('#', ''));
+    setActive(id);
+    window.requestAnimationFrame(() => scrollToSectionWhenReady(id, { updateHash: false }));
   }, [location.hash, location.pathname]);
 
   function handleSectionClick(event, id) {
@@ -60,7 +77,7 @@ export default function Header() {
       navigate(`/#${id}`);
       return;
     }
-    if (!scrollToSection(id)) window.history.replaceState(null, '', `#${id}`);
+    scrollToSectionWhenReady(id);
   }
 
   return (
