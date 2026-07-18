@@ -99,6 +99,7 @@ export async function askAiAssistant(type, payload = {}) {
       ok: Boolean(data.ok && text),
       providerConfigured: Boolean(data.providerConfigured),
       envName: data.envName || '',
+      model: data.model || '',
       reason: data.reason || '',
       text: text || fallbackAiText(type, payload),
       fallback: !data.ok || !text,
@@ -109,6 +110,7 @@ export async function askAiAssistant(type, payload = {}) {
       ok: false,
       providerConfigured: false,
       envName: '',
+      model: '',
       reason: 'function-unreachable',
       text: fallbackAiText(type, payload),
       fallback: true,
@@ -123,8 +125,8 @@ export function createAppointmentSummary(appointment) {
 
 export function aiResultMessage(result, successMessage = 'AI draft is ready. Review before using.') {
   if (!result?.fallback) {
-    return result.envName
-      ? `${successMessage} Gemini key detected from ${result.envName}.`
+    return result.envName || result.model
+      ? `${successMessage} Gemini key detected from ${result.envName || 'environment'}${result.model ? ` using ${result.model}` : ''}.`
       : successMessage;
   }
 

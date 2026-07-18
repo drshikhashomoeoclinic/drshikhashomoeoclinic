@@ -46,38 +46,56 @@ async function callGemini(type, payload) {
   const envName = supportedKeys.find((key) => process.env[key]);
   const apiKey = envName ? process.env[envName] : '';
   if (!apiKey) return { text: '', envName: '', configured: false };
+  const modelCandidates = [
+    process.env.GEMINI_MODEL,
+    'gemini-3.5-flash',
+    'gemini-2.0-flash',
+    'gemini-flash-latest'
+  ].filter(Boolean);
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: systemPrompt(type) },
-            { text: JSON.stringify(payload || {}, null, 2) }
-          ]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.45,
-        maxOutputTokens: 900
+  const requestBody = JSON.stringify({
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { text: systemPrompt(type) },
+          { text: JSON.stringify(payload || {}, null, 2) }
+        ]
       }
-    })
+    ],
+    generationConfig: {
+      temperature: 0.45,
+      maxOutputTokens: 900
+    }
   });
 
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`AI provider failed: ${detail}`);
+  const errors = [];
+  for (const model of modelCandidates) {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey
+      },
+      body: requestBody
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      errors.push(`${model}: ${detail}`);
+      continue;
+    }
+
+    const data = await response.json();
+    return {
+      text: data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('\n').trim() || '',
+      envName,
+      model,
+      configured: true
+    };
   }
 
-  const data = await response.json();
-  return {
-    text: data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('\n').trim() || '',
-    envName,
-    configured: true
-  };
+  throw new Error(`AI provider failed for all Gemini models. ${errors.join(' | ')}`);
 }
 
 export async function handler(event) {
@@ -90,8 +108,8 @@ export async function handler(event) {
   try {
     const result = await callGemini(type, payload);
     if (!result.configured) return json(200, { ok: false, providerConfigured: false, reason: 'missing-env', text: '' });
-    if (!result.text) return json(200, { ok: false, providerConfigured: true, envName: result.envName, reason: 'empty-ai-response', text: '' });
-    return json(200, { ok: true, providerConfigured: true, envName: result.envName, text: result.text });
+    if (!result.text) return json(200, { ok: false, providerConfigured: true, envName: result.envName, model: result.model, reason: 'empty-ai-response', text: '' });
+    return json(200, { ok: true, providerConfigured: true, envName: result.envName, model: result.model, text: result.text });
   } catch (error) {
     return json(200, { ok: false, providerConfigured: true, reason: 'provider-error', error: error.message, text: '' });
   }
