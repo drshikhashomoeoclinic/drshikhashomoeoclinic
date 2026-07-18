@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { ClinicProvider } from './context/ClinicContext.jsx';
-import { LanguageProvider } from './context/LanguageContext.jsx';
 import './styles/index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -14,9 +13,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <AuthProvider>
           <ClinicProvider>
-            <LanguageProvider>
-              <App />
-            </LanguageProvider>
+            <App />
           </ClinicProvider>
         </AuthProvider>
       </BrowserRouter>

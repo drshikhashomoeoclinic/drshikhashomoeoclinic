@@ -7,7 +7,6 @@ import TreatmentCard from '../components/cards/TreatmentCard.jsx';
 import SEO from '../components/seo/SEO.jsx';
 import SectionHeader from '../components/ui/SectionHeader.jsx';
 import { useClinic } from '../context/ClinicContext.jsx';
-import { useLanguage } from '../context/LanguageContext.jsx';
 
 const bubbles = [
   ['left-[5%] top-[12%] size-20', 0],
@@ -51,7 +50,6 @@ function fadeUp(delay = 0) {
 
 export default function Home() {
   const { site, doctor, home, services, posts, reviews, gallery } = useClinic();
-  const { t } = useLanguage();
   const homeData = home;
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const highlights = Array.isArray(homeData.highlights)
@@ -65,27 +63,27 @@ export default function Home() {
     ['Call / WhatsApp', site.phone]
   ];
   const faqs = [
-    [t('How do I book an appointment?'), t('Tap Book Appointment, call the clinic, or send a WhatsApp message. The clinic will confirm your visit.')],
-    [t('What should I share before consultation?'), t('Share your main complaint, age, mobile number, preferred date, and any important medical history.')],
-    [t('Where is the clinic located?'), site.address || 'Hindmotor, Uttarpara'],
-    [t('Can I read patient reviews?'), t('Yes. You can see patient experiences here and open the official Google review page from the Reviews section.')]
+    ['How do I book an appointment?', 'Tap Book Appointment, call the clinic, or send a WhatsApp message. The clinic will confirm your visit.'],
+    ['What should I share before consultation?', 'Share your main complaint, age, mobile number, preferred date, and any important medical history.'],
+    ['Where is the clinic located?', site.address || 'Hindmotor, Uttarpara'],
+    ['Can I read patient reviews?', 'Yes. You can see patient experiences here and open the official Google review page from the Reviews section.']
   ];
   const patientProblems = [
-    [t('Confusing symptoms'), t('Many patients are unsure whether recurring acidity, hair fall, allergy, headache, or hormonal symptoms need a consultation.')],
-    [t('No clear next step'), t('Patients often do not know what details to share, which reports to bring, or how follow-up will work.')],
-    [t('Delayed care'), t('Small concerns become stressful when there is no simple way to ask, book, and get guided properly.')]
+    ['Confusing symptoms', 'Many patients are unsure whether recurring acidity, hair fall, allergy, headache, or hormonal symptoms need a consultation.'],
+    ['No clear next step', 'Patients often do not know what details to share, which reports to bring, or how follow-up will work.'],
+    ['Delayed care', 'Small concerns become stressful when there is no simple way to ask, book, and get guided properly.']
   ];
   const journeySteps = [
-    [MessageCircle, t('Share your concern'), t('Tell us your main symptom, duration, and preferred appointment time.')],
-    [ClipboardCheck, t('Doctor understands your case'), t('Your symptoms, history, triggers, and reports are reviewed carefully.')],
-    [Stethoscope, t('Get personalised care'), t('You receive guidance based on your individual case and follow-up needs.')],
-    [ListChecks, t('Continue follow-up'), t('The clinic helps you stay clear about next steps after consultation.')]
+    [MessageCircle, 'Share your concern', 'Tell us your main symptom, duration, and preferred appointment time.'],
+    [ClipboardCheck, 'Doctor understands your case', 'Your symptoms, history, triggers, and reports are reviewed carefully.'],
+    [Stethoscope, 'Get personalised care', 'You receive guidance based on your individual case and follow-up needs.'],
+    [ListChecks, 'Continue follow-up', 'The clinic helps you stay clear about next steps after consultation.']
   ];
   const trustStats = [
-    [doctor.experience || site.experience || '5+', t('Years Experience')],
-    [doctor.patients || site.patients || '1000+', t('Happy Patients')],
-    ['BHMS', t('Qualified Doctor')],
-    [site.location || 'Hindmotor', t('Local Clinic')]
+    [doctor.experience || site.experience || '5+', 'Years Experience'],
+    [doctor.patients || site.patients || '1000+', 'Happy Patients'],
+    ['BHMS', 'Qualified Doctor'],
+    [site.location || 'Hindmotor', 'Local Clinic']
   ];
 
   useEffect(() => {
@@ -95,7 +93,7 @@ export default function Home() {
   const campaignUrl = homeData.campaignButtonUrl || '/book-appointment';
   const campaignButton = (
     <span className="btn-primary w-full px-6 py-3.5 sm:w-auto">
-      <CalendarDays size={19} /> {homeData.campaignButtonLabel || t('Book Appointment')}
+      <CalendarDays size={19} /> {homeData.campaignButtonLabel || 'Book Appointment'}
     </span>
   );
   const campaignCta = campaignUrl.startsWith('http') ? (
@@ -116,8 +114,8 @@ export default function Home() {
             <h1 className="mt-4 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.02] tracking-normal text-clinic-ink sm:mt-5 sm:text-6xl lg:text-[4.35rem] lg:leading-[0.96]">{homeData.heroTitle}</h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-5 sm:text-[17px] sm:leading-8">{homeData.heroSubtitle || `Tell us your health concern, choose a preferred time, and get careful homoeopathic consultation from ${doctor.doctorName || site.doctorName}.`}</p>
             <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
-              <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> {t('Book a Visit')}</Link>
-              <a className="btn-secondary w-full px-6 py-3.5 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> {t('Get Directions')}</a>
+              <Link className="btn-primary w-full px-6 py-3.5 sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> {'Book a Visit'}</Link>
+              <a className="btn-secondary w-full px-6 py-3.5 sm:w-auto" href={site.mapLink} target="_blank" rel="noreferrer"><MapPin size={19} /> {'Get Directions'}</a>
             </div>
             <div className="mt-6 grid overflow-hidden rounded-[1.25rem] border border-white/70 bg-white/55 shadow-glass backdrop-blur-2xl sm:mt-7 sm:grid-cols-3">
               {heroStats.map(([label, value]) => (
@@ -180,9 +178,9 @@ export default function Home() {
         <div className="container-lux">
           <div className="grid gap-6 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
             <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-6">
-              <p className="eyebrow">{t('Patient Journey')}</p>
-              <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-clinic-ink md:text-5xl">{t('From health confusion to clear consultation.')}</h2>
-              <p className="mt-4 text-base leading-7 text-slate-600">{t('Patients should not feel lost before booking. The website now guides them step by step, from symptom selection to appointment and follow-up.')}</p>
+              <p className="eyebrow">{'Patient Journey'}</p>
+              <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-clinic-ink md:text-5xl">{'From health confusion to clear consultation.'}</h2>
+              <p className="mt-4 text-base leading-7 text-slate-600">{'Patients should not feel lost before booking. The website now guides them step by step, from symptom selection to appointment and follow-up.'}</p>
               <div className="mt-5 grid gap-3">
                 {patientProblems.map(([title, text]) => (
                   <div className="rounded-2xl border border-white/70 bg-white/65 p-4 shadow-sm" key={title}>
@@ -222,17 +220,17 @@ export default function Home() {
       <section id="about" className="section-pad relative scroll-mt-28">
         <div className="container-lux grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
           <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-6">
-            <p className="eyebrow">{t('Meet Your Doctor')}</p>
+            <p className="eyebrow">{'Meet Your Doctor'}</p>
             <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-clinic-ink sm:text-4xl">{doctor.profileTitle || 'Experienced Homoeopathic Physician & Family Health Consultant'}</h2>
             <p className="mt-5 text-base leading-8 text-slate-700">{doctor.about || `${doctor.doctorName || site.doctorName} listens to your symptoms, understands your history, and guides you with gentle homoeopathic care and follow-up support.`}</p>
-            <Link className="btn-secondary mt-6" to="/about-doctor">{t('Read Doctor Profile')} <ArrowRight size={17} /></Link>
+            <Link className="btn-secondary mt-6" to="/about-doctor">{'Read Doctor Profile'} <ArrowRight size={17} /></Link>
           </motion.div>
           <motion.div {...fadeUp(0.08)} className="grid gap-4 sm:grid-cols-2">
             {[
-              [t('DoctorLabel'), doctor.doctorName || site.doctorName],
-              [t('Qualification'), doctor.qualification || site.qualification],
-              [t('Experience'), doctor.experience || site.experience],
-              [t('Patients'), doctor.patients || site.patients]
+              ['Doctor', doctor.doctorName || site.doctorName],
+              ['Qualification', doctor.qualification || site.qualification],
+              ['Experience', doctor.experience || site.experience],
+              ['Patients', doctor.patients || site.patients]
             ].map(([label, value]) => (
               <article className="glass-card p-5" key={label}>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-clinic-gold">{label}</p>
@@ -281,7 +279,7 @@ export default function Home() {
         <div className="container-lux">
           <SectionHeader eyebrow="Treatment Areas" title={homeData.treatmentsTitle} text={homeData.treatmentsText || 'Choose your health concern and open the card to understand how consultation can help.'} />
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((service) => <TreatmentCard key={service.id || service.slug || service.title} service={service} />)}</div>
-          <Link className="btn-secondary mt-8" to="/treatments">{t('See All Health Concerns')} <ArrowRight size={17} /></Link>
+          <Link className="btn-secondary mt-8" to="/treatments">{'See All Health Concerns'} <ArrowRight size={17} /></Link>
         </div>
       </section>
 
@@ -299,7 +297,7 @@ export default function Home() {
                 <p className="mt-4 max-w-2xl text-base leading-8 text-white/75">{homeData.campaignText || 'Share your main health concern and the clinic will guide you with appointment confirmation and follow-up support.'}</p>
                 <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
                   {campaignCta}
-                  <a className="btn-secondary w-full bg-white/85 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> {t('Call Clinic')}</a>
+                  <a className="btn-secondary w-full bg-white/85 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> {'Call Clinic'}</a>
                 </div>
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-3 shadow-glass backdrop-blur-xl">
@@ -357,7 +355,7 @@ export default function Home() {
               </motion.article>
             ))}
           </div>
-          <Link className="btn-secondary mt-8" to="/gallery">{t('View More Photos')} <ArrowRight size={17} /></Link>
+          <Link className="btn-secondary mt-8" to="/gallery">{'View More Photos'} <ArrowRight size={17} /></Link>
         </div>
       </section>
 
@@ -370,7 +368,7 @@ export default function Home() {
 
       <section id="faq" className="section-pad relative scroll-mt-28 bg-white/35">
         <div className="container-lux">
-          <SectionHeader eyebrow={t('Questions')} title={t('Before you book')} text={t('Simple answers for patients visiting or booking for the first time.')} />
+          <SectionHeader eyebrow={'Questions'} title={'Before you book'} text={'Simple answers for patients visiting or booking for the first time.'} />
           <div className="grid gap-4 md:grid-cols-2">
             {faqs.map(([question, answer], index) => (
               <motion.article {...fadeUp(index * 0.05)} className="glass-card p-5" key={question}>
@@ -388,13 +386,13 @@ export default function Home() {
           <div className="absolute -right-24 -top-24 size-64 rounded-full border border-clinic-gold/20 bg-clinic-gold/10 blur-sm" />
           <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">{t('Need Help?')}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-clinic-gold">{'Need Help?'}</p>
               <h2 className="mt-3 font-display text-3xl font-bold leading-tight md:text-4xl">{homeData.contactTitle}</h2>
               <p className="mt-3 max-w-3xl leading-7 text-white/75">{homeData.contactText || 'Call, WhatsApp, or book an appointment online. The clinic will guide you with the next step.'}</p>
             </div>
             <div className="grid gap-3 sm:flex sm:flex-wrap">
-              <Link className="btn-primary w-full sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> {t('Book a Visit')}</Link>
-              <a className="btn-secondary w-full bg-white/80 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> {t('Call Clinic')}</a>
+              <Link className="btn-primary w-full sm:w-auto" to="/book-appointment"><CalendarDays size={19} /> {'Book a Visit'}</Link>
+              <a className="btn-secondary w-full bg-white/80 text-clinic-emerald sm:w-auto" href={`tel:${site.phone}`}><Phone size={18} /> {'Call Clinic'}</a>
             </div>
           </div>
         </div>
