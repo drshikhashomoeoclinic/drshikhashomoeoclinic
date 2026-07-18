@@ -2,6 +2,7 @@ import { CalendarDays, Menu, Phone, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useClinic } from '../../context/ClinicContext.jsx';
+import { useLanguage } from '../../context/LanguageContext.jsx';
 import { phoneHref } from '../../lib/contact.js';
 
 const links = [
@@ -41,6 +42,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('');
   const { site } = useClinic();
+  const { language, setLanguage, t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -98,13 +100,17 @@ export default function Header() {
               onClick={(event) => handleSectionClick(event, id)}
               className={`relative py-2 text-sm font-semibold transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-clinic-gold after:transition ${active === id ? 'text-clinic-emerald after:scale-x-100' : 'text-slate-700 after:scale-x-0 hover:text-clinic-emerald hover:after:scale-x-100'}`}
             >
-              {label}
+              {t(label)}
             </a>
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> Call</a>
-          <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> Book</Link>
+          <div className="rounded-full border border-clinic-emerald/15 bg-white/55 p-1">
+            <button className={`rounded-full px-2.5 py-1 text-xs font-bold ${language === 'en' ? 'bg-clinic-emerald text-white' : 'text-clinic-emerald'}`} type="button" onClick={() => setLanguage('en')}>EN</button>
+            <button className={`rounded-full px-2.5 py-1 text-xs font-bold ${language === 'bn' ? 'bg-clinic-emerald text-white' : 'text-clinic-emerald'}`} type="button" onClick={() => setLanguage('bn')}>বাংলা</button>
+          </div>
+          <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> {t('Call')}</a>
+          <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> {t('Book')}</Link>
         </div>
         <button className="rounded-full border border-white/70 bg-white/60 p-2 shadow-sm backdrop-blur-xl lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
           {open ? <X /> : <Menu />}
@@ -120,10 +126,14 @@ export default function Header() {
                 onClick={(event) => handleSectionClick(event, id)}
                 className={`rounded-2xl px-4 py-3 font-semibold ${active === id ? 'bg-emerald-50 text-clinic-emerald' : 'hover:bg-emerald-50'}`}
               >
-                {label}
+                {t(label)}
               </a>
             ))}
-            <Link to="/book-appointment" onClick={() => setOpen(false)} className="btn-primary">Book Appointment</Link>
+            <div className="grid grid-cols-2 gap-2 rounded-2xl bg-clinic-soft p-1">
+              <button className={`rounded-xl px-3 py-2 text-sm font-bold ${language === 'en' ? 'bg-white text-clinic-emerald shadow-sm' : 'text-slate-600'}`} type="button" onClick={() => setLanguage('en')}>English</button>
+              <button className={`rounded-xl px-3 py-2 text-sm font-bold ${language === 'bn' ? 'bg-white text-clinic-emerald shadow-sm' : 'text-slate-600'}`} type="button" onClick={() => setLanguage('bn')}>বাংলা</button>
+            </div>
+            <Link to="/book-appointment" onClick={() => setOpen(false)} className="btn-primary">{t('Book Appointment')}</Link>
           </div>
         </div>
       )}
