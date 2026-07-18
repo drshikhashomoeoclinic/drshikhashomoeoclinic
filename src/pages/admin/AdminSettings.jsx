@@ -1,7 +1,8 @@
-import { Eye, RotateCcw, Save, Undo2 } from 'lucide-react';
+import { Eye, RotateCcw, Save, Sparkles, Undo2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { homeSettings, seoSettings, siteSettings } from '../../data/fallback.js';
 import { getDocument, saveDocument } from '../../services/firestore.js';
+import { askAiAssistant } from '../../services/aiAssistant.js';
 
 const fieldSets = {
   'settings/site': [
@@ -207,8 +208,11 @@ export default function AdminSettings({ collectionName, documentId, title }) {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
   const [statusType, setStatusType] = useState('success');
+  const [aiBusy, setAiBusy] = useState('');
+  const [aiDraft, setAiDraft] = useState('');
   const fields = useMemo(() => fieldConfig(collectionName, documentId), [collectionName, documentId]);
   const isHomepageEditor = collectionName === 'pages' && documentId === 'home';
+  const isSeoEditor = collectionName === 'seo' && documentId === 'settings';
 
   useEffect(() => {
     const fallback = defaultData(collectionName, documentId);
@@ -219,6 +223,8 @@ export default function AdminSettings({ collectionName, documentId, title }) {
       setPreview(null);
       setErrors({});
       setStatus('');
+      setAiBusy('');
+      setAiDraft('');
     });
   }, [collectionName, documentId]);
 
@@ -233,6 +239,7 @@ export default function AdminSettings({ collectionName, documentId, title }) {
     setPreview(null);
     setErrors({});
     setStatus('');
+    setAiDraft('');
   }
 
   function previewHomepage() {
@@ -275,6 +282,35 @@ export default function AdminSettings({ collectionName, documentId, title }) {
     }
   }
 
+  function lineValue(text, label) {
+    const match = String(text || '').match(new RegExp(`${label}:\\s*(.+)`, 'i'));
+    return match?.[1]?.trim() || '';
+  }
+
+  async function generateCampaignDraft() {
+    setAiBusy('campaignCaption');
+    const result = await askAiAssistant('campaignCaption', { homepage: draft, clinic: data });
+    setAiDraft(result.text);
+    setDraft((current) => ({
+      ...current,
+      campaignTitle: lineValue(result.text, 'Campaign Heading') || current.campaignTitle,
+      campaignText: lineValue(result.text, 'Description') || current.campaignText,
+      campaignButtonLabel: lineValue(result.text, 'Button Text') || current.campaignButtonLabel
+    }));
+    setStatusType('success');
+    setStatus(result.fallback ? 'Campaign draft created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI campaign draft added. Review before saving.');
+    setAiBusy('');
+  }
+
+  async function generateSeoDraft() {
+    setAiBusy('seoMeta');
+    const result = await askAiAssistant('seoMeta', { settings: data, fields });
+    setAiDraft(result.text);
+    setStatusType('success');
+    setStatus(result.fallback ? 'SEO draft created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI SEO draft ready. Review before saving.');
+    setAiBusy('');
+  }
+
   if (isHomepageEditor) {
     const previewData = preview || draft;
 
@@ -307,6 +343,14 @@ export default function AdminSettings({ collectionName, documentId, title }) {
 
               <div className="mt-5 grid gap-6 xl:grid-cols-[1.05fr_.95fr]">
                 <div className="grid gap-4 md:grid-cols-2">
+                  {section.id === 'campaign' && (
+                    <div className="rounded-[1.5rem] border border-emerald-100 bg-emerald-50/60 p-4 md:col-span-2">
+                      <h3 className="flex items-center gap-2 font-display text-xl font-bold text-clinic-ink"><Sparkles className="text-clinic-emerald" size={20} /> AI Campaign Helper</h3>
+                      <p className="mt-1 text-sm text-slate-600">Generate a patient-friendly campaign heading, description, button text, and social caption.</p>
+                      <button className="btn-secondary mt-3 px-4 py-2" type="button" onClick={generateCampaignDraft} disabled={aiBusy === 'campaignCaption'}>{aiBusy === 'campaignCaption' ? 'Creating...' : 'Generate Campaign Text'}</button>
+                      {aiDraft && <pre className="mt-3 max-h-56 overflow-auto whitespace-pre-wrap rounded-2xl bg-white p-3 text-sm leading-6 text-slate-700">{aiDraft}</pre>}
+                    </div>
+                  )}
                   {section.fields.map(([rawField, friendlyLabel, helper]) => {
                     const [field, type] = rawField.split(':');
                     const isTextarea = type === 'textarea';
@@ -380,6 +424,14 @@ export default function AdminSettings({ collectionName, documentId, title }) {
   return (
     <section>
       <h1 className="font-display text-4xl font-bold">{title}</h1>
+      {isSeoEditor && (
+        <div className="mt-6 rounded-[2rem] border border-emerald-100 bg-emerald-50/60 p-5 shadow-glass">
+          <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-clinic-ink"><Sparkles className="text-clinic-emerald" size={22} /> AI SEO Helper</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Generate meta title, description, keywords, and FAQ ideas for the SEO Manager. Review and place the text into the fields below.</p>
+          <button className="btn-secondary mt-4 px-4 py-2" type="button" onClick={generateSeoDraft} disabled={aiBusy === 'seoMeta'}>{aiBusy === 'seoMeta' ? 'Creating...' : 'Generate SEO Draft'}</button>
+          {aiDraft && <pre className="mt-4 max-h-72 overflow-auto whitespace-pre-wrap rounded-2xl bg-white p-4 text-sm leading-6 text-slate-700">{aiDraft}</pre>}
+        </div>
+      )}
       <form key={`${collectionName}-${documentId}-${Object.keys(data).length}`} onSubmit={handleSubmit} className="mt-6 grid gap-4 rounded-[2rem] bg-white p-6 shadow-glass lg:grid-cols-2">
         {fields.map((rawField) => {
           const [field, type] = rawField.split(':');

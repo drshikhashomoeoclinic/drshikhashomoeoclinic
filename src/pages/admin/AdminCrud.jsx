@@ -1,8 +1,9 @@
-import { Eye, RotateCcw, Save } from 'lucide-react';
+import { Eye, RotateCcw, Save, Sparkles } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
 import { slugify } from '../../lib/content.js';
+import { askAiAssistant } from '../../services/aiAssistant.js';
 
 const extraFields = {
   services: ['icon'],
@@ -87,6 +88,8 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('');
   const [statusType, setStatusType] = useState('success');
+  const [aiBusy, setAiBusy] = useState('');
+  const [aiDraft, setAiDraft] = useState('');
   const isBlogEditor = collectionName === 'posts';
   const sortedItems = useMemo(() => (
     isBlogEditor
@@ -104,6 +107,8 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
     setPreview(false);
     setErrors({});
     setStatus('');
+    setAiBusy('');
+    setAiDraft('');
     refresh();
   }, [collectionName, richText, isBlogEditor]);
 
@@ -124,6 +129,7 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
     setPreview(false);
     setErrors({});
     setStatus('');
+    setAiDraft('');
   }
 
   function resetForm() {
@@ -132,6 +138,26 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
     setPreview(false);
     setErrors({});
     setStatus('');
+    setAiDraft('');
+  }
+
+  async function runBlogAi(type) {
+    setAiBusy(type);
+    const result = await askAiAssistant(type, {
+      topic: formData.title || formData.category || 'patient health education',
+      formData
+    });
+    setAiDraft(result.text);
+    setStatusType('success');
+    setStatus(result.fallback ? 'AI helper used the free built-in template. Add GEMINI_API_KEY for smarter output.' : 'AI helper draft is ready. Review before using.');
+    if (type === 'blogDraft' && !formData.body) {
+      setFormData((current) => ({
+        ...current,
+        body: result.text,
+        excerpt: current.excerpt || result.text.split('\n').find((line) => line.toLowerCase().startsWith('excerpt:'))?.replace(/^excerpt:\s*/i, '') || ''
+      }));
+    }
+    setAiBusy('');
   }
 
   function previewBlog() {
@@ -200,6 +226,21 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_.86fr]">
           <form onSubmit={handleSubmit} className="rounded-[2rem] bg-white p-5 shadow-glass sm:p-6">
+            <div className="mb-5 rounded-[1.5rem] border border-emerald-100 bg-emerald-50/60 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-clinic-ink"><Sparkles className="text-clinic-emerald" size={22} /> AI Blog Helper</h2>
+                  <p className="mt-1 text-sm text-slate-600">Generate patient-friendly ideas, blog drafts, SEO text, and FAQs. Review everything before saving.</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button className="btn-secondary px-4 py-2" type="button" onClick={() => runBlogAi('blogIdeas')} disabled={Boolean(aiBusy)}>{aiBusy === 'blogIdeas' ? 'Creating...' : 'Topic Ideas'}</button>
+                <button className="btn-secondary px-4 py-2" type="button" onClick={() => runBlogAi('blogDraft')} disabled={Boolean(aiBusy)}>{aiBusy === 'blogDraft' ? 'Writing...' : 'Blog Draft'}</button>
+                <button className="btn-secondary px-4 py-2" type="button" onClick={() => runBlogAi('seoMeta')} disabled={Boolean(aiBusy)}>{aiBusy === 'seoMeta' ? 'Creating...' : 'SEO Meta'}</button>
+                <button className="btn-secondary px-4 py-2" type="button" onClick={() => runBlogAi('faqGenerator')} disabled={Boolean(aiBusy)}>{aiBusy === 'faqGenerator' ? 'Creating...' : 'FAQ Draft'}</button>
+              </div>
+              {aiDraft && <pre className="mt-4 max-h-72 overflow-auto whitespace-pre-wrap rounded-2xl bg-white p-4 text-sm leading-6 text-slate-700">{aiDraft}</pre>}
+            </div>
             <div className="grid gap-4">
               <label className="font-semibold">
                 Article Title

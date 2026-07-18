@@ -1,7 +1,8 @@
-import { CalendarDays, CheckCircle2, Clock3, Search, Trash2, XCircle } from 'lucide-react';
+import { CalendarDays, CheckCircle2, Clock3, MessageSquareText, Search, Sparkles, Trash2, XCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
+import { askAiAssistant, createAppointmentSummary, fallbackAiText } from '../../services/aiAssistant.js';
 import { sendAppointmentNotification } from '../../services/notifications.js';
 
 const statuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'Follow-up'];
@@ -102,10 +103,12 @@ export default function AdminAppointments() {
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(initialEdit);
   const [message, setMessage] = useState('');
+  const [aiBusyId, setAiBusyId] = useState('');
+  const [aiDrafts, setAiDrafts] = useState({});
 
   async function refresh() {
     const docs = await listDocs('appointments', []);
-    setAppointments(docs.map((item) => ({ ...item, status: normalizeStatus(item.status) })));
+    setAppointments(docs.map((item) => ({ ...item, status: normalizeStatus(item.status), aiSummary: item.aiSummary || createAppointmentSummary(item) })));
   }
 
   useEffect(() => { refresh(); }, []);
@@ -190,6 +193,23 @@ export default function AdminAppointments() {
     setMessage('Patient profile created from appointment.');
   }
 
+  async function generateAppointmentSummary(item) {
+    setAiBusyId(`${item.id}-summary`);
+    const result = await askAiAssistant('appointmentSummary', { appointment: item });
+    await updateDocument('appointments', item.id, { aiSummary: result.text });
+    setAppointments((items) => items.map((appointment) => appointment.id === item.id ? { ...appointment, aiSummary: result.text } : appointment));
+    setMessage(result.fallback ? 'AI summary created using free fallback template. Add GEMINI_API_KEY for smarter drafts.' : 'AI appointment summary updated.');
+    setAiBusyId('');
+  }
+
+  async function generateAppointmentDraft(item, type) {
+    setAiBusyId(`${item.id}-${type}`);
+    const result = await askAiAssistant(type, { appointment: item });
+    setAiDrafts((current) => ({ ...current, [item.id]: result.text }));
+    setMessage(result.fallback ? 'Draft created using free fallback template. Add GEMINI_API_KEY for smarter drafts.' : 'AI draft ready. Review before sending.');
+    setAiBusyId('');
+  }
+
   async function sendReminder(item, action) {
     const result = await sendAppointmentNotification(action, item);
     const label = action === 'follow-up-reminder' ? 'Follow-up' : 'Appointment';
@@ -269,6 +289,16 @@ export default function AdminAppointments() {
                   <p className="mt-1 text-sm text-slate-600">{item.date || 'No date'} | {item.timeSlot || 'No time slot'}</p>
                   <p className="mt-3 text-sm leading-6 text-slate-700">{item.complaint || item.concern}</p>
                   {item.notes && <p className="mt-2 text-sm text-slate-500">Notes: {item.notes}</p>}
+                  <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <strong className="flex items-center gap-2 text-sm text-clinic-emerald"><Sparkles size={16} /> AI Case Summary</strong>
+                      <button className="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-clinic-emerald shadow-sm" type="button" onClick={() => generateAppointmentSummary(item)} disabled={aiBusyId === `${item.id}-summary`}>
+                        {aiBusyId === `${item.id}-summary` ? 'Creating...' : 'Refresh'}
+                      </button>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-700">{item.aiSummary || fallbackAiText('appointmentSummary', item)}</p>
+                    {aiDrafts[item.id] && <pre className="mt-3 whitespace-pre-wrap rounded-2xl bg-white p-3 text-sm leading-6 text-slate-700">{aiDrafts[item.id]}</pre>}
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button className="btn-secondary px-4 py-2" onClick={() => startEditing(item)}>Edit</button>
@@ -277,6 +307,8 @@ export default function AdminAppointments() {
                   <button className="btn-secondary px-4 py-2" onClick={() => mark(item.id, 'Cancelled')}>Cancel</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'appointment-reminder')}>Reminder</button>
                   <button className="btn-secondary px-4 py-2" onClick={() => sendReminder(item, 'follow-up-reminder')}>Follow-up</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => generateAppointmentDraft(item, 'whatsappTemplate')} disabled={aiBusyId === `${item.id}-whatsappTemplate`}><MessageSquareText size={16} /> WhatsApp Draft</button>
+                  <button className="btn-secondary px-4 py-2" onClick={() => generateAppointmentDraft(item, 'reviewReply')} disabled={aiBusyId === `${item.id}-reviewReply`}><Sparkles size={16} /> Review Reply</button>
                   <button className="rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-600" onClick={() => deleteAppointment(item.id)}><Trash2 size={16} /></button>
                 </div>
               </div>

@@ -8,6 +8,7 @@ import { useClinic } from '../context/ClinicContext.jsx';
 import { whatsappHref } from '../lib/contact.js';
 import { db, firebaseEnabled } from '../lib/firebase.js';
 import { canSubmit, isEmail, isPhone, required, sanitizePayload } from '../lib/validation.js';
+import { createAppointmentSummary } from '../services/aiAssistant.js';
 import { sendAppointmentNotification } from '../services/notifications.js';
 
 const initialForm = {
@@ -112,6 +113,7 @@ export default function Appointment() {
         ...form,
         age: Number(form.age),
         mobile: form.phone,
+        aiSummary: createAppointmentSummary(form),
         status: 'Pending',
         source: 'website'
       });

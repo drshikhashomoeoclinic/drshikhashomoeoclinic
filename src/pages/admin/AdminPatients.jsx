@@ -1,9 +1,10 @@
-import { Download, FileText, Printer, Search, Trash2, Upload, UserRound } from 'lucide-react';
+import { Download, FileText, Printer, Search, Sparkles, Trash2, Upload, UserRound } from 'lucide-react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useMemo, useState } from 'react';
 import { listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
 import { storage } from '../../lib/firebase.js';
+import { askAiAssistant } from '../../services/aiAssistant.js';
 
 const initialPatient = {
   patientId: '',
@@ -117,6 +118,8 @@ export default function AdminPatients() {
   const [labReports, setLabReports] = useState([]);
   const [savingPrescription, setSavingPrescription] = useState(false);
   const [message, setMessage] = useState('');
+  const [aiBusy, setAiBusy] = useState('');
+  const [aiText, setAiText] = useState('');
 
   async function refresh() {
     setPatients(await listDocs('patients', []));
@@ -137,6 +140,7 @@ export default function AdminPatients() {
     setPrescriptionForm(initialPrescription);
     setPrescriptionPdf(null);
     setLabReports([]);
+    setAiText('');
     setMessage('');
   }
 
@@ -183,6 +187,25 @@ export default function AdminPatients() {
   function updatePrescriptionField(event) {
     const { name, value } = event.target;
     setPrescriptionForm((current) => ({ ...current, [name]: value }));
+  }
+
+  async function generateVisitSummary() {
+    if (!editing?.id) return;
+    setAiBusy('visitSummary');
+    const result = await askAiAssistant('visitSummary', { patient: form });
+    setAiText(result.text);
+    setMessage(result.fallback ? 'Visit summary created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI visit summary ready.');
+    setAiBusy('');
+  }
+
+  async function simplifyPrescription() {
+    if (!editing?.id) return;
+    setAiBusy('prescriptionInstructions');
+    const result = await askAiAssistant('prescriptionInstructions', { patient: form, prescription: prescriptionForm });
+    setPrescriptionForm((current) => ({ ...current, advice: current.advice ? `${current.advice}\n\n${result.text}` : result.text }));
+    setAiText(result.text);
+    setMessage(result.fallback ? 'Prescription instructions created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI patient instructions added to advice. Review before saving.');
+    setAiBusy('');
   }
 
   async function uploadFile(file, patientId, folder) {
@@ -316,6 +339,12 @@ export default function AdminPatients() {
 
         <form className="rounded-[2rem] bg-white p-6 shadow-glass" onSubmit={savePatient}>
           <h2 className="font-display text-2xl font-bold">{editing ? 'Edit Patient Profile' : 'Select a patient'}</h2>
+          <div className="mt-4 rounded-[1.5rem] border border-emerald-100 bg-emerald-50/60 p-4">
+            <h3 className="flex items-center gap-2 font-display text-xl font-bold text-clinic-ink"><Sparkles className="text-clinic-emerald" size={20} /> AI Patient Helper</h3>
+            <p className="mt-1 text-sm text-slate-600">Create a quick visit summary for records. Review before copying into notes.</p>
+            <button className="btn-secondary mt-3 px-4 py-2" type="button" disabled={!editing || aiBusy === 'visitSummary'} onClick={generateVisitSummary}>{aiBusy === 'visitSummary' ? 'Creating...' : 'Create Visit Summary'}</button>
+            {aiText && <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-2xl bg-white p-3 text-sm leading-6 text-slate-700">{aiText}</pre>}
+          </div>
           <div className="mt-5 grid gap-3">
             <input className="admin-input" name="patientId" value={form.patientId} onChange={updateField} placeholder="Patient ID" disabled={!editing} />
             <input className="admin-input" name="name" value={form.name} onChange={updateField} placeholder="Name" disabled={!editing} />
@@ -336,6 +365,11 @@ export default function AdminPatients() {
         <form className="rounded-[2rem] bg-white p-6 shadow-glass xl:col-start-2" onSubmit={savePrescription}>
           <h2 className="font-display text-2xl font-bold">Prescription Management</h2>
           <p className="mt-2 text-sm text-slate-500">{editing ? `Create prescription for ${form.name}` : 'Select a patient to create prescriptions, upload PDFs, and attach lab reports.'}</p>
+          <div className="mt-4 rounded-[1.5rem] border border-emerald-100 bg-emerald-50/60 p-4">
+            <h3 className="flex items-center gap-2 font-display text-xl font-bold text-clinic-ink"><Sparkles className="text-clinic-emerald" size={20} /> AI Instruction Helper</h3>
+            <p className="mt-1 text-sm text-slate-600">Turn doctor notes into clearer patient instructions without adding new medicines.</p>
+            <button className="btn-secondary mt-3 px-4 py-2" type="button" disabled={!editing || aiBusy === 'prescriptionInstructions'} onClick={simplifyPrescription}>{aiBusy === 'prescriptionInstructions' ? 'Writing...' : 'Simplify Instructions'}</button>
+          </div>
           <div className="mt-5 grid gap-3">
             <input className="admin-input" type="date" name="date" value={prescriptionForm.date} onChange={updatePrescriptionField} disabled={!editing} />
             <textarea className="admin-input min-h-20" name="diagnosis" value={prescriptionForm.diagnosis} onChange={updatePrescriptionField} placeholder="Diagnosis" disabled={!editing} />
