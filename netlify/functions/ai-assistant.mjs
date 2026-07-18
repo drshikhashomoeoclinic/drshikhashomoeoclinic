@@ -35,7 +35,7 @@ function systemPrompt(type) {
 }
 
 async function callGemini(type, payload) {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.AI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.Gemini_API_Key || process.env.AI_API_KEY;
   if (!apiKey) return null;
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {

@@ -15,7 +15,7 @@ Create an admin user in Firebase Authentication. The `/admin/login` route signs 
 
 ## Free AI Helpers
 
-Admin AI helpers work with safe built-in templates by default. For smarter free-tier AI drafts, add `GEMINI_API_KEY` or `AI_API_KEY` in Vercel/Netlify environment variables. The key is used only inside serverless functions and is never exposed in the frontend.
+Admin AI helpers work with safe built-in templates by default. For smarter free-tier AI drafts, add `GEMINI_API_KEY` or `AI_API_KEY` in Vercel/Netlify environment variables. `Gemini_API_Key` is also supported for compatibility, but `GEMINI_API_KEY` is recommended. The key is used only inside serverless functions and is never exposed in the frontend.
 
 ## Deploy
 
