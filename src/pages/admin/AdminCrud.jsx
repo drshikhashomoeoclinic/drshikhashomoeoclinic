@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
 import { slugify } from '../../lib/content.js';
-import { askAiAssistant } from '../../services/aiAssistant.js';
+import { aiResultMessage, askAiAssistant } from '../../services/aiAssistant.js';
 
 const extraFields = {
   services: ['icon'],
@@ -149,7 +149,7 @@ export default function AdminCrud({ collectionName, title, richText = false }) {
     });
     setAiDraft(result.text);
     setStatusType('success');
-    setStatus(result.fallback ? 'AI helper used the free built-in template. Add GEMINI_API_KEY for smarter output.' : 'AI helper draft is ready. Review before using.');
+    setStatus(aiResultMessage(result, 'AI helper draft is ready. Review before using.'));
     if (type === 'blogDraft' && !formData.body) {
       setFormData((current) => ({
         ...current,

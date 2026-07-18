@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
 import { storage } from '../../lib/firebase.js';
-import { askAiAssistant } from '../../services/aiAssistant.js';
+import { aiResultMessage, askAiAssistant } from '../../services/aiAssistant.js';
 
 const initialPatient = {
   patientId: '',
@@ -194,7 +194,7 @@ export default function AdminPatients() {
     setAiBusy('visitSummary');
     const result = await askAiAssistant('visitSummary', { patient: form });
     setAiText(result.text);
-    setMessage(result.fallback ? 'Visit summary created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI visit summary ready.');
+    setMessage(aiResultMessage(result, 'AI visit summary ready.'));
     setAiBusy('');
   }
 
@@ -204,7 +204,7 @@ export default function AdminPatients() {
     const result = await askAiAssistant('prescriptionInstructions', { patient: form, prescription: prescriptionForm });
     setPrescriptionForm((current) => ({ ...current, advice: current.advice ? `${current.advice}\n\n${result.text}` : result.text }));
     setAiText(result.text);
-    setMessage(result.fallback ? 'Prescription instructions created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI patient instructions added to advice. Review before saving.');
+    setMessage(aiResultMessage(result, 'AI patient instructions added to advice. Review before saving.'));
     setAiBusy('');
   }
 

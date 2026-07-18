@@ -2,7 +2,7 @@ import { Eye, RotateCcw, Save, Sparkles, Undo2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { homeSettings, seoSettings, siteSettings } from '../../data/fallback.js';
 import { getDocument, saveDocument } from '../../services/firestore.js';
-import { askAiAssistant } from '../../services/aiAssistant.js';
+import { aiResultMessage, askAiAssistant } from '../../services/aiAssistant.js';
 
 const fieldSets = {
   'settings/site': [
@@ -298,7 +298,7 @@ export default function AdminSettings({ collectionName, documentId, title }) {
       campaignButtonLabel: lineValue(result.text, 'Button Text') || current.campaignButtonLabel
     }));
     setStatusType('success');
-    setStatus(result.fallback ? 'Campaign draft created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI campaign draft added. Review before saving.');
+    setStatus(aiResultMessage(result, 'AI campaign draft added. Review before saving.'));
     setAiBusy('');
   }
 
@@ -307,7 +307,7 @@ export default function AdminSettings({ collectionName, documentId, title }) {
     const result = await askAiAssistant('seoMeta', { settings: data, fields });
     setAiDraft(result.text);
     setStatusType('success');
-    setStatus(result.fallback ? 'SEO draft created using free fallback template. Add GEMINI_API_KEY for smarter output.' : 'AI SEO draft ready. Review before saving.');
+    setStatus(aiResultMessage(result, 'AI SEO draft ready. Review before saving.'));
     setAiBusy('');
   }
 

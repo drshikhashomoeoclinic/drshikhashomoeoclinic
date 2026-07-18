@@ -35,8 +35,17 @@ function systemPrompt(type) {
 }
 
 async function callGemini(type, payload) {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.Gemini_API_Key || process.env.AI_API_KEY;
-  if (!apiKey) return null;
+  const supportedKeys = [
+    'GEMINI_API_KEY',
+    'Gemini_API_Key',
+    'GEMINI_APIKEY',
+    'GOOGLE_API_KEY',
+    'GOOGLE_GENERATIVE_AI_API_KEY',
+    'AI_API_KEY'
+  ];
+  const envName = supportedKeys.find((key) => process.env[key]);
+  const apiKey = envName ? process.env[envName] : '';
+  if (!apiKey) return { text: '', envName: '', configured: false };
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
     method: 'POST',
@@ -64,7 +73,11 @@ async function callGemini(type, payload) {
   }
 
   const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('\n').trim() || '';
+  return {
+    text: data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('\n').trim() || '',
+    envName,
+    configured: true
+  };
 }
 
 export async function handler(event) {
@@ -75,10 +88,11 @@ export async function handler(event) {
   if (!type) return json(400, { ok: false, error: 'AI helper type is required.' });
 
   try {
-    const text = await callGemini(type, payload);
-    if (!text) return json(200, { ok: false, providerConfigured: false, text: '' });
-    return json(200, { ok: true, providerConfigured: true, text });
+    const result = await callGemini(type, payload);
+    if (!result.configured) return json(200, { ok: false, providerConfigured: false, reason: 'missing-env', text: '' });
+    if (!result.text) return json(200, { ok: false, providerConfigured: true, envName: result.envName, reason: 'empty-ai-response', text: '' });
+    return json(200, { ok: true, providerConfigured: true, envName: result.envName, text: result.text });
   } catch (error) {
-    return json(200, { ok: false, providerConfigured: true, error: error.message, text: '' });
+    return json(200, { ok: false, providerConfigured: true, reason: 'provider-error', error: error.message, text: '' });
   }
 }

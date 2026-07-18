@@ -2,7 +2,7 @@ import { CalendarDays, CheckCircle2, Clock3, MessageSquareText, Search, Sparkles
 import { useEffect, useMemo, useState } from 'react';
 import { createDocument, listDocs, removeDocument, updateDocument } from '../../services/firestore.js';
 import { sanitizePayload } from '../../lib/validation.js';
-import { askAiAssistant, createAppointmentSummary, fallbackAiText } from '../../services/aiAssistant.js';
+import { aiResultMessage, askAiAssistant, createAppointmentSummary, fallbackAiText } from '../../services/aiAssistant.js';
 import { sendAppointmentNotification } from '../../services/notifications.js';
 
 const statuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'Follow-up'];
@@ -198,7 +198,7 @@ export default function AdminAppointments() {
     const result = await askAiAssistant('appointmentSummary', { appointment: item });
     await updateDocument('appointments', item.id, { aiSummary: result.text });
     setAppointments((items) => items.map((appointment) => appointment.id === item.id ? { ...appointment, aiSummary: result.text } : appointment));
-    setMessage(result.fallback ? 'AI summary created using free fallback template. Add GEMINI_API_KEY for smarter drafts.' : 'AI appointment summary updated.');
+    setMessage(aiResultMessage(result, 'AI appointment summary updated.'));
     setAiBusyId('');
   }
 
@@ -206,7 +206,7 @@ export default function AdminAppointments() {
     setAiBusyId(`${item.id}-${type}`);
     const result = await askAiAssistant(type, { appointment: item });
     setAiDrafts((current) => ({ ...current, [item.id]: result.text }));
-    setMessage(result.fallback ? 'Draft created using free fallback template. Add GEMINI_API_KEY for smarter drafts.' : 'AI draft ready. Review before sending.');
+    setMessage(aiResultMessage(result, 'AI draft ready. Review before sending.'));
     setAiBusyId('');
   }
 

@@ -98,6 +98,8 @@ export async function askAiAssistant(type, payload = {}) {
     return {
       ok: Boolean(data.ok && text),
       providerConfigured: Boolean(data.providerConfigured),
+      envName: data.envName || '',
+      reason: data.reason || '',
       text: text || fallbackAiText(type, payload),
       fallback: !data.ok || !text,
       error: data.error || ''
@@ -106,6 +108,8 @@ export async function askAiAssistant(type, payload = {}) {
     return {
       ok: false,
       providerConfigured: false,
+      envName: '',
+      reason: 'function-unreachable',
       text: fallbackAiText(type, payload),
       fallback: true,
       error: error.message
@@ -115,4 +119,22 @@ export async function askAiAssistant(type, payload = {}) {
 
 export function createAppointmentSummary(appointment) {
   return fallbackAiText('appointmentSummary', appointment);
+}
+
+export function aiResultMessage(result, successMessage = 'AI draft is ready. Review before using.') {
+  if (!result?.fallback) {
+    return result.envName
+      ? `${successMessage} Gemini key detected from ${result.envName}.`
+      : successMessage;
+  }
+
+  if (result?.reason === 'missing-env' || !result?.providerConfigured) {
+    return 'AI is using the free built-in template because this live deployment cannot read the Gemini key. In Vercel, add GEMINI_API_KEY for Production, then redeploy the latest Production deployment.';
+  }
+
+  if (result?.reason === 'provider-error') {
+    return `AI is using the free built-in template because Gemini returned an error. Check that the API key is valid and Gemini API is enabled. ${result.error || ''}`.trim();
+  }
+
+  return 'AI is using the free built-in template because Gemini did not return a usable response. Try again in a moment.';
 }
