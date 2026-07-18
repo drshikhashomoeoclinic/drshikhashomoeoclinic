@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Award, CalendarDays, CheckCircle2, Clock, Gift, HelpCircle, Images, MapPin, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, CheckCircle2, ClipboardCheck, Clock, Gift, HelpCircle, Images, ListChecks, MapPin, MessageCircle, Phone, Quote, ShieldCheck, Sparkles, Star, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogCard from '../components/cards/BlogCard.jsx';
@@ -67,6 +67,23 @@ export default function Home() {
     ['What should I share before consultation?', 'Share your main complaint, age, mobile number, preferred date, and any important medical history.'],
     ['Where is the clinic located?', site.address || 'Hindmotor, Uttarpara'],
     ['Can I read patient reviews?', 'Yes. You can see patient experiences here and open the official Google review page from the Reviews section.']
+  ];
+  const patientProblems = [
+    ['Confusing symptoms', 'Many patients are unsure whether recurring acidity, hair fall, allergy, headache, or hormonal symptoms need a consultation.'],
+    ['No clear next step', 'Patients often do not know what details to share, which reports to bring, or how follow-up will work.'],
+    ['Delayed care', 'Small concerns become stressful when there is no simple way to ask, book, and get guided properly.']
+  ];
+  const journeySteps = [
+    [MessageCircle, 'Share your concern', 'Tell us your main symptom, duration, and preferred appointment time.'],
+    [ClipboardCheck, 'Doctor understands your case', 'Your symptoms, history, triggers, and reports are reviewed carefully.'],
+    [Stethoscope, 'Get personalised care', 'You receive guidance based on your individual case and follow-up needs.'],
+    [ListChecks, 'Continue follow-up', 'The clinic helps you stay clear about next steps after consultation.']
+  ];
+  const trustStats = [
+    [doctor.experience || site.experience || '5+', 'Years Experience'],
+    [doctor.patients || site.patients || '1000+', 'Happy Patients'],
+    ['BHMS', 'Qualified Doctor'],
+    [site.location || 'Hindmotor', 'Local Clinic']
   ];
 
   useEffect(() => {
@@ -154,6 +171,49 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section id="patient-journey" className="section-pad relative scroll-mt-28 bg-white/35">
+        <div className="container-lux">
+          <div className="grid gap-6 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
+            <motion.div {...fadeUp()} className="premium-panel p-5 sm:p-6">
+              <p className="eyebrow">Patient Journey</p>
+              <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-clinic-ink md:text-5xl">From health confusion to clear consultation.</h2>
+              <p className="mt-4 text-base leading-7 text-slate-600">Patients should not feel lost before booking. The website now guides them step by step, from symptom selection to appointment and follow-up.</p>
+              <div className="mt-5 grid gap-3">
+                {patientProblems.map(([title, text]) => (
+                  <div className="rounded-2xl border border-white/70 bg-white/65 p-4 shadow-sm" key={title}>
+                    <strong className="block font-display text-xl text-clinic-ink">{title}</strong>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <div className="grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {journeySteps.map(([Icon, title, text], index) => (
+                  <motion.article {...fadeUp(index * 0.06)} className="glass-card glass-card-hover p-5" key={title}>
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-clinic-emerald text-white shadow-sm"><Icon size={20} /></span>
+                      <span className="rounded-full bg-clinic-gold/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-clinic-gold">Step {index + 1}</span>
+                    </div>
+                    <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-clinic-ink">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+                  </motion.article>
+                ))}
+              </div>
+              <motion.div {...fadeUp(0.12)} className="grid overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/70 shadow-glass backdrop-blur-xl sm:grid-cols-4">
+                {trustStats.map(([value, label]) => (
+                  <div className="border-b border-white/60 p-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0" key={label}>
+                    <strong className="block font-display text-3xl leading-none text-clinic-emerald">{value}</strong>
+                    <span className="mt-1 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
