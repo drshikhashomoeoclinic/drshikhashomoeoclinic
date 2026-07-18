@@ -5,9 +5,9 @@ import { useClinic } from '../../context/ClinicContext.jsx';
 import { phoneHref } from '../../lib/contact.js';
 
 const links = [
-  ['Doctor', 'about'],
-  ['How We Help', 'services'],
-  ['Patient Stories', 'reviews'],
+  ['About Doctor', 'about'],
+  ['Treatments', 'services'],
+  ['Reviews', 'reviews'],
   ['Gallery', 'gallery'],
   ['Health Tips', 'blog'],
   ['Contact', 'contact']
@@ -103,8 +103,8 @@ export default function Header() {
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> Call</a>
-          <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> Book</Link>
+          <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> Call Clinic</a>
+          <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> Book Appointment</Link>
         </div>
         <button className="rounded-full border border-white/70 bg-white/60 p-2 shadow-sm backdrop-blur-xl lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
           {open ? <X /> : <Menu />}
