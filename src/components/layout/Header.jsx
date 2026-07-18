@@ -82,15 +82,15 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 py-2">
-      <div className="container-lux flex h-14 items-center justify-between gap-3 rounded-full border border-white/65 bg-white/68 px-3 shadow-glass backdrop-blur-2xl md:gap-4 md:px-4">
-        <Link to="/" className="flex min-w-0 items-center gap-2.5" onClick={() => setOpen(false)}>
+      <div className="mx-auto flex h-14 w-[min(1180px,calc(100%-24px))] items-center justify-between gap-3 rounded-full border border-white/65 bg-white/68 px-3 shadow-glass backdrop-blur-2xl md:px-4">
+        <Link to="/" className="flex min-w-0 flex-1 items-center gap-2.5 xl:max-w-[310px] xl:flex-none" onClick={() => setOpen(false)}>
           <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/60 bg-gradient-to-br from-clinic-emerald to-clinic-emeraldDark font-display text-base font-bold text-white shadow-lg shadow-emerald-900/20 md:size-10 md:text-lg">S</span>
           <span className="min-w-0">
-            <strong className="block truncate font-display text-base font-bold leading-none text-clinic-ink sm:text-xl">{site.clinicName}</strong>
-            <small className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
+            <strong className="block truncate font-display text-base font-bold leading-tight text-clinic-ink sm:text-lg xl:text-xl">{site.clinicName}</strong>
+            <small className="block truncate text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">{site.location || 'Hindmotor, Uttarpara'}</small>
           </span>
         </Link>
-        <nav className="hidden items-center gap-4 lg:flex">
+        <nav className="hidden items-center gap-4 xl:flex">
           {links.map(([label, id]) => (
             <a
               key={id}
@@ -102,17 +102,17 @@ export default function Header() {
             </a>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           <a href={phoneHref(site.phone)} className="btn-secondary px-3.5 py-2"><Phone size={16} /> Call Clinic</a>
           <Link to="/book-appointment" className="btn-primary px-4 py-2"><CalendarDays size={16} /> Book Appointment</Link>
         </div>
-        <button className="rounded-full border border-white/70 bg-white/60 p-2 shadow-sm backdrop-blur-xl lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
+        <button className="rounded-full border border-white/70 bg-white/60 p-2 shadow-sm backdrop-blur-xl xl:hidden" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
           {open ? <X /> : <Menu />}
         </button>
       </div>
       {open && (
-        <div className="px-4 lg:hidden">
-          <div className="container-lux mt-2 grid gap-3 rounded-[1.5rem] border border-white/65 bg-white/82 p-4 shadow-luxury backdrop-blur-2xl">
+        <div className="px-4 xl:hidden">
+          <div className="mx-auto mt-2 grid w-[min(1180px,calc(100%-8px))] gap-3 rounded-[1.5rem] border border-white/65 bg-white/82 p-4 shadow-luxury backdrop-blur-2xl">
             {links.map(([label, id]) => (
               <a
                 key={id}
